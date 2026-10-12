@@ -248,6 +248,7 @@ def root_portal():
 </body>
 </html>"""
 
+@app.get("/health")
 @app.get("/api/health")
 def healthcheck():
     return {

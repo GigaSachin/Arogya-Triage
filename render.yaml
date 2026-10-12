@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: arogya-triage-backend
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SARVAM_API_KEY
+        value: sk_abz9ebmo_tDWEvCUnbGVZfsc0IPHIQYOp
+      - key: SARVAM_STT_MODEL
+        value: saaras:v3
+      - key: SARVAM_TTS_MODEL
+        value: bulbul:v3
