@@ -52,10 +52,17 @@ app.add_middleware(
 # Mount Veterinary Gateway Router
 app.include_router(veterinary_router)
 
-# Initialize Database at startup
+# Initialize Database and auto-seed benchmark cases if empty
 @app.on_event("startup")
 def on_startup():
     init_db()
+    try:
+        existing = TriageDatabase.get_all_records()
+        if not existing:
+            seed_synthetic_scenarios()
+            print("Auto-seeded initial benchmark scenarios (Human TC-01..03 + Vet VET-01..04).")
+    except Exception as e:
+        print(f"Startup seed notice: {e}")
     print("AROGYA-TRIAGE Engine initialized in live human-operated clinical triage mode.")
 
 # -------------------------------------------------------------
