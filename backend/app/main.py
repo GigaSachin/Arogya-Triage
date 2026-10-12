@@ -742,7 +742,7 @@ def clear_all_queue_records():
     init_db()
     with TriageDatabase.get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM triage_queue")
+        cursor.execute("DELETE FROM triage_records")
         cursor.execute("DELETE FROM override_audit_log")
         conn.commit()
     return {

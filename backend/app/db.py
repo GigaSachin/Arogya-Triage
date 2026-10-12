@@ -241,6 +241,11 @@ class TriageDatabase:
         return rec_id
 
     @staticmethod
+    def get_all_records() -> List[Dict[str, Any]]:
+        """Returns all records across all domains and statuses"""
+        return TriageDatabase.get_queue(status_filter="ALL", district_filter="ALL", domain_filter="ALL")
+
+    @staticmethod
     def get_queue(
         status_filter: Optional[str] = "ALL", 
         district_filter: Optional[str] = "ALL",
