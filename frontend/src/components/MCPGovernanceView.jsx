@@ -346,7 +346,7 @@ export default function MCPGovernanceView() {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
             <thead>
-              <tr style={{ background: '#0a0f1d', color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr style={{ background: 'var(--table-header-bg)', color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th style={{ padding: '0.55rem 0.85rem' }}>Record ID</th>
                 <th style={{ padding: '0.55rem 0.85rem' }}>Transition</th>
                 <th style={{ padding: '0.55rem 0.85rem' }}>Mandatory Clinical Justification</th>
@@ -357,8 +357,8 @@ export default function MCPGovernanceView() {
             <tbody>
               {auditLogs.length > 0 ? (
                 auditLogs.map((log) => (
-                  <tr key={log.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                    <td style={{ padding: '0.55rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>
+                  <tr key={log.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={{ padding: '0.55rem 0.85rem', fontFamily: 'var(--font-mono)', color: 'var(--text-highlight)' }}>
                       {log.record_id}
                     </td>
                     <td style={{ padding: '0.55rem 0.85rem' }}>
@@ -366,7 +366,7 @@ export default function MCPGovernanceView() {
                         ESI {log.previous_esi} → ESI {log.new_esi}
                       </span>
                     </td>
-                    <td style={{ padding: '0.55rem 0.85rem', color: '#ffffff', fontWeight: '500' }}>
+                    <td style={{ padding: '0.55rem 0.85rem', color: 'var(--text-primary)', fontWeight: '500' }}>
                       {log.justification_reason}
                     </td>
                     <td style={{ padding: '0.55rem 0.85rem', color: 'var(--text-secondary)' }}>

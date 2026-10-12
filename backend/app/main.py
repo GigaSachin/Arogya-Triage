@@ -5,13 +5,19 @@ Lead Developer: Sachin | Sponsored by Cognizant | BPUT Hackathon 2026
 """
 import uuid
 import datetime
+import os
 from pathlib import Path
 from typing import Dict, Any, Optional, List
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks
+# pyrefly: ignore [missing-import]
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Header, BackgroundTasks
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+# pyrefly: ignore [missing-import]
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
+# pyrefly: ignore [missing-import]
 from pydantic import BaseModel, Field
 
+from . import config
 from .config import (
     REGULATORY_DISCLAIMER, FACILITIES, CLINICAL_REFERENCE_INTERVALS,
     UPLOAD_DIR, PDF_DIR, ODISHA_DISTRICTS
@@ -24,6 +30,8 @@ from .telemetry_service import BigQueryTelemetryService
 from .pdf_generator import ABDMReferralPDFGenerator
 from .db import TriageDatabase, init_db
 from .seed_data import seed_synthetic_scenarios
+from .veterinary_router import router as veterinary_router
+from .veterinary_pdf import VeterinaryReferralPDFGenerator
 
 # Initialize FastAPI App
 app = FastAPI(
@@ -41,12 +49,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Database and Seed Benchmark Scenarios at startup
+# Mount Veterinary Gateway Router
+app.include_router(veterinary_router)
+
+# Initialize Database at startup
 @app.on_event("startup")
 def on_startup():
     init_db()
-    seed_synthetic_scenarios()
-    print("AROGYA-TRIAGE Engine initialized with synthetic clinical test vectors.")
+    print("AROGYA-TRIAGE Engine initialized in live human-operated clinical triage mode.")
 
 # -------------------------------------------------------------
 # Pydantic Request Models
@@ -86,6 +96,24 @@ class TranscribeRequest(BaseModel):
     text: Optional[str] = None
     scenario_preset: Optional[str] = None
 
+class VoiceKeyRequest(BaseModel):
+    api_key: str = ""
+
+class TranslateRequest(BaseModel):
+    text: str
+    source_language: str = "od-IN"
+    target_language: str = "en-IN"
+    api_key: Optional[str] = None
+
+class TTSRequest(BaseModel):
+    text: str
+    language: str = "odia"
+    speaker: str = "aditya"
+    api_key: Optional[str] = None
+
+class TestSarvamRequest(BaseModel):
+    api_key: Optional[str] = None
+
 class MCPExecuteRequest(BaseModel):
     tool_name: str
     arguments: Dict[str, Any]
@@ -93,6 +121,133 @@ class MCPExecuteRequest(BaseModel):
 # -------------------------------------------------------------
 # System & Configuration Endpoints
 # -------------------------------------------------------------
+@app.get("/", response_class=HTMLResponse)
+def root_portal():
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AROGYA-TRIAGE Engine</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #090d16;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    .card {
+      background: #0f172a;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 16px;
+      max-width: 680px;
+      width: 100%;
+      padding: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .dot { width: 8px; height: 8px; background: #10b981; borderRadius: 50%; display: inline-block; }
+    h1 { font-size: 1.85rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    p.lead { color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.75rem; }
+    .btn-group { display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 2rem; }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0.85rem 1.4rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #1d4ed8, #1e40af); transform: translateY(-1px); }
+    .btn-secondary {
+      background: rgba(30, 41, 59, 0.8);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    .btn-secondary:hover { background: rgba(51, 65, 85, 0.8); color: #ffffff; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.15);
+    }
+    .service-item {
+      background: #1e293b;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .service-title { color: #64748b; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; }
+    .service-val { color: #38bdf8; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge"><span class="dot"></span> Backend Engine Online (Port 8000)</div>
+    <h1>AROGYA-TRIAGE</h1>
+    <p class="lead">
+      Autonomous Clinical Emergency & Veterinary Triage System. The API backend is running here on port 8000, while the full interactive user application is hosted on port 5173.
+    </p>
+
+    <div class="btn-group">
+      <a href="http://localhost:5173" class="btn btn-primary">
+        🚀 Launch Arogya-Triage Web Application (Port 5173)
+      </a>
+      <a href="/docs" class="btn btn-secondary">
+        📖 Open Swagger Interactive API Documentation (/docs)
+      </a>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-item">
+        <div class="service-title">Indic STT</div>
+        <div class="service-val">Sarvam saaras:v3</div>
+      </div>
+      <div class="service-item">
+        <div class="service-title">Translation</div>
+        <div class="service-val">Sarvam Indic formal</div>
+      </div>
+      <div class="service-item">
+        <div class="service-title">Voice Synth</div>
+        <div class="service-val">Sarvam bulbul:v3</div>
+      </div>
+      <div class="service-item">
+        <div class="service-title">Veterinary</div>
+        <div class="service-val">OneHealth Gateway</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>"""
+
 @app.get("/api/health")
 def healthcheck():
     return {
@@ -166,6 +321,116 @@ def transcribe_vernacular(req: TranscribeRequest):
         language=req.language,
         text_input=req.text,
         scenario_preset=req.scenario_preset
+    )
+    return res
+
+@app.get("/api/voice/status")
+def get_voice_status():
+    """
+    Returns the real-time configuration status of the Sarvam AI Indic Speech & Language pipeline.
+    """
+    key = (config.SARVAM_API_KEY or os.getenv("SARVAM_API_KEY", "")).strip()
+    return {
+        "status": "ONLINE",
+        "sarvam_configured": bool(key),
+        "api_key_masked": (key[:4] + "..." + key[-4:]) if len(key) >= 8 else ("Configured" if key else None),
+        "supported_languages": [
+            {"code": "od-IN", "label": "ଓଡ଼ିଆ (Odia)", "id": "odia"},
+            {"code": "hi-IN", "label": "हिन्दी (Hindi)", "id": "hindi"},
+            {"code": "en-IN", "label": "English (India)", "id": "english"}
+        ],
+        "model": config.SARVAM_STT_MODEL,
+        "tts_model": config.SARVAM_TTS_MODEL,
+        "service_url": config.SARVAM_STT_URL,
+        "features": [
+            "Speech-to-Text (saaras:v3)",
+            "Vernacular Translation (od-IN -> en-IN)",
+            "Speech Synthesis (bulbul:v3)"
+        ]
+    }
+
+@app.post("/api/voice/configure-key")
+def configure_voice_key(req: VoiceKeyRequest):
+    """
+    Dynamically saves and updates the Sarvam AI API subscription key in-flight
+    without requiring a backend restart.
+    """
+    new_key = req.api_key.strip()
+    config.SARVAM_API_KEY = new_key
+    os.environ["SARVAM_API_KEY"] = new_key
+    return {
+        "status": "SUCCESS",
+        "sarvam_configured": bool(new_key),
+        "api_key_masked": (new_key[:4] + "..." + new_key[-4:]) if len(new_key) >= 8 else ("Configured" if new_key else None),
+        "message": "Sarvam AI API key successfully saved and active across all endpoints." if new_key else "Sarvam AI API key cleared."
+    }
+
+@app.post("/api/voice/test-sarvam")
+async def test_sarvam_connectivity(req: Optional[TestSarvamRequest] = None):
+    """
+    Performs real-time live validation of the Sarvam AI subscription key against
+    Translation, Speech-to-Text, and Text-to-Speech pipelines.
+    """
+    key = req.api_key if (req and req.api_key) else None
+    results = await IndicVoiceService.test_sarvam_connectivity(api_key=key)
+    return results
+
+@app.post("/api/voice/translate")
+async def translate_indic_text(req: TranslateRequest):
+    """
+    Translates vernacular Indic clinical complaints to English using Sarvam AI Translation.
+    """
+    translated = await IndicVoiceService.translate_text(
+        text=req.text,
+        source_language=req.source_language,
+        target_language=req.target_language,
+        api_key=req.api_key
+    )
+    if translated is None:
+        raise HTTPException(status_code=502, detail="Sarvam translation service unavailable or key missing")
+    return {
+        "status": "SUCCESS",
+        "original_text": req.text,
+        "translated_text": translated,
+        "source_language": req.source_language,
+        "target_language": req.target_language,
+        "provider": "Sarvam AI Translation"
+    }
+
+@app.post("/api/voice/tts")
+async def synthesize_speech(req: TTSRequest):
+    """
+    Generates spoken Indic audio from text using Sarvam AI TTS (bulbul:v3).
+    """
+    res = await IndicVoiceService.synthesize_speech(
+        text=req.text,
+        language=req.language,
+        speaker=req.speaker,
+        api_key=req.api_key
+    )
+    if not res:
+        raise HTTPException(status_code=502, detail="Sarvam speech synthesis service unavailable or key missing")
+    return res
+
+@app.post("/api/voice/transcribe-audio")
+async def transcribe_audio_file(
+    file: UploadFile = File(...),
+    language: str = Form("odia"),
+    api_key: Optional[str] = Form(None),
+    x_sarvam_key: Optional[str] = Header(None, alias="X-Sarvam-Key")
+):
+    """
+    Accepts real microphone audio (WAV, MP3, WEBM, M4A) and transcribes
+    using Sarvam AI Speech-to-Text with Indic language support (Odia, Hindi, English).
+    Falls back gracefully if API key is missing or offline.
+    """
+    content = await file.read()
+    effective_key = api_key or x_sarvam_key
+    res = await IndicVoiceService.transcribe_audio_file(
+        file_bytes=content,
+        filename=file.filename or "recording.webm",
+        language=language,
+        api_key=effective_key
     )
     return res
 
@@ -277,6 +542,7 @@ async def submit_patient_intake(intake: PatientIntakeRequest, background_tasks: 
 
     triage_record = {
         "id": rec_id,
+        "domain": "human",
         "test_case_id": intake.test_case_id,
         "display_pseudonym": sanitized.get("display_pseudonym"),
         "abha_id": f"91-{rec_id[7:11]}-{rec_id[11:15]}-9921",
@@ -313,6 +579,7 @@ async def submit_patient_intake(intake: PatientIntakeRequest, background_tasks: 
     return {
         "status": "RECORD_CREATED",
         "record_id": rec_id,
+        "domain": "human",
         "esi_level": esi_result["esi_level"],
         "urgency_code": esi_result["urgency_code"],
         "display_pseudonym": triage_record["display_pseudonym"],
@@ -324,12 +591,16 @@ async def submit_patient_intake(intake: PatientIntakeRequest, background_tasks: 
 # Reviewer Dashboard & Live Queue Operations
 # -------------------------------------------------------------
 @app.get("/api/queue")
-def get_triage_queue(status: Optional[str] = "ALL", district: Optional[str] = "ALL"):
+def get_triage_queue(
+    status: Optional[str] = "ALL", 
+    district: Optional[str] = "ALL",
+    domain: Optional[str] = "ALL"
+):
     """
     Returns priority-sorted queue:
-    Red (ESI 1 & 2) at top, Yellow (ESI 3) in middle, Green (ESI 4 & 5) at bottom.
+    Optionally filtered by domain ('ALL', 'human', 'veterinary'), status, and district.
     """
-    records = TriageDatabase.get_queue(status_filter=status, district_filter=district)
+    records = TriageDatabase.get_queue(status_filter=status, district_filter=district, domain_filter=domain)
     return {
         "total_active": len(records),
         "records": records,
@@ -357,6 +628,16 @@ def override_esi_assessment(record_id: str, req: OverrideRequest):
     """
     Doctor override of ESI level with mandatory clinical justification audit log (PRD FR-3.3)
     """
+    record = TriageDatabase.get_record_by_id(record_id)
+    if not record:
+        raise HTTPException(status_code=404, detail="Record not found")
+
+    if record.get("domain") == "veterinary":
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot apply human ESI level override to veterinary animal records. Use /api/veterinary/queue/{record_id}/override."
+        )
+
     if req.new_esi < 1 or req.new_esi > 5:
         raise HTTPException(status_code=400, detail="ESI Level must be between 1 and 5")
     if not req.justification_reason.strip():
@@ -380,10 +661,18 @@ def override_esi_assessment(record_id: str, req: OverrideRequest):
 
 @app.get("/api/queue/{record_id}/referral/pdf")
 def download_referral_pdf(record_id: str):
-    """Generates and downloads ABDM / FHIR-compliant referral summary PDF"""
+    """Generates and downloads ABDM / FHIR-compliant referral summary PDF (or Veterinary transfer note)"""
     record = TriageDatabase.get_record_by_id(record_id)
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
+
+    if record.get("domain") == "veterinary":
+        pdf_path = VeterinaryReferralPDFGenerator.generate_referral_pdf(record)
+        return FileResponse(
+            pdf_path,
+            media_type="application/pdf",
+            filename=f"Veterinary_Referral_{record_id}.pdf"
+        )
 
     pdf_path = ABDMReferralPDFGenerator.generate_referral_pdf(record)
     return FileResponse(
@@ -399,6 +688,12 @@ def export_fhir_bundle(record_id: str):
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
 
+    if record.get("domain") == "veterinary":
+        raise HTTPException(
+            status_code=400,
+            detail="HL7 FHIR ABDM bundles apply exclusively to human patients. Veterinary records utilize DAH&VS veterinary referral transfer note."
+        )
+
     bundle = ClinicalMCPServer.generate_abdm_fhir_bundle(record)
     return bundle
 
@@ -411,10 +706,10 @@ def get_telemetry_surveillance():
     return BigQueryTelemetryService.get_surveillance_telemetry()
 
 @app.get("/api/audit/logs")
-def get_clinical_audit_logs():
-    """Returns immutable log of all doctor ESI overrides"""
+def get_clinical_audit_logs(domain: Optional[str] = "ALL"):
+    """Returns immutable log of all clinical overrides (human ESI and veterinary VTI)"""
     return {
-        "audit_logs": TriageDatabase.get_audit_logs(),
+        "audit_logs": TriageDatabase.get_audit_logs(domain_filter=domain),
         "disclaimer": REGULATORY_DISCLAIMER
     }
 
@@ -423,6 +718,27 @@ def get_clinical_audit_logs():
 # -------------------------------------------------------------
 @app.post("/api/synthetic/load")
 def reload_synthetic_scenarios():
-    """Resets database and loads pristine PRD test vectors (TC-01, TC-02, TC-03)"""
+    """Resets database and loads pristine PRD test vectors (TC-01..03, VET-TC-01..04)"""
     seed_synthetic_scenarios()
-    return {"status": "RESET_SUCCESSFUL", "scenarios_loaded": ["TC-01", "TC-02", "TC-03"]}
+    return {
+        "status": "RESET_SUCCESSFUL", 
+        "scenarios_loaded": ["TC-01", "TC-02", "TC-03", "VET-TC-01", "VET-TC-02", "VET-TC-03", "VET-TC-04"]
+    }
+
+@app.post("/api/queue/clear")
+def clear_all_queue_records():
+    """
+    Clears all queue records so that only real, live cases entered by human health workers
+    and veterinary officers are present in the clinical queue.
+    """
+    init_db()
+    with TriageDatabase.get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM triage_queue")
+        cursor.execute("DELETE FROM override_audit_log")
+        conn.commit()
+    return {
+        "status": "QUEUE_CLEARED",
+        "message": "All clinical records cleared. Ready for live human-operated triage intake."
+    }
+

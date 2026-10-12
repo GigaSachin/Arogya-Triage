@@ -45,6 +45,36 @@ export default function LoginPage({ onLogin }) {
         'Automatic In-Flight Aadhaar & Phone PII Masking'
       ]
     },
+    vet_officer: {
+      role: 'vet_officer',
+      id: 'OD-VET-2018-9921',
+      name: 'Dr. A. K. Nayak, BVSc & AH',
+      designation: 'Senior Veterinary Officer (Emergency & Livestock)',
+      facility: 'Govt Veterinary Hospital Panposh, Rourkela',
+      facilityId: 'FAC-ROU-01',
+      color: '#10b981',
+      glow: 'rgba(16, 185, 129, 0.35)',
+      highlights: [
+        'Veterinary Triage Index (VTI: Critical, Emergent, Urgent, Routine)',
+        'Species-Specific Bovine & Canine Emergency Norms',
+        'DAH&VS Clinical Referral Note & Transfer PDF Generation'
+      ]
+    },
+    paravet: {
+      role: 'paravet',
+      id: 'LI-SDG-2023-118',
+      name: 'Bikram Jena, Livestock Inspector',
+      designation: 'Frontline Paravet & Livestock Inspector',
+      facility: 'Block Veterinary Dispensary Bisra',
+      facilityId: 'FAC-ROU-02',
+      color: '#06b6d4',
+      glow: 'rgba(6, 182, 212, 0.35)',
+      highlights: [
+        'Field Bovine Bloat & Canine Parvovirus Fast Intake',
+        'Automatic Owner Phone Privacy Protection',
+        'Transparent Uncertainty Safe Fallbacks (Zero Drug Prescriptions)'
+      ]
+    },
     patient: {
       role: 'patient',
       id: 'TC-01-RED-SEPSIS',
@@ -52,8 +82,8 @@ export default function LoginPage({ onLogin }) {
       abha: '91-4421-9902-8812',
       designation: 'Citizen Patient (ABHA Verified)',
       facility: 'Rourkela Govt Hospital (RGH)',
-      color: '#10b981',
-      glow: 'rgba(16, 185, 129, 0.35)',
+      color: '#8b5cf6',
+      glow: 'rgba(139, 92, 246, 0.35)',
       highlights: [
         'Live Triage Queue Token & Bed Allocation Status',
         'Ayushman Bharat Digital Health Card (ABHA)',
@@ -70,6 +100,10 @@ export default function LoginPage({ onLogin }) {
       setRegId('OD-MCI-2019-4821');
     } else if (role === 'anm_gnm') {
       setRegId('ANM-SDG-2024-042');
+    } else if (role === 'vet_officer') {
+      setRegId('OD-VET-2018-9921');
+    } else if (role === 'paravet') {
+      setRegId('LI-SDG-2023-118');
     } else {
       setRegId('91-4421-9902-8812');
     }
@@ -122,8 +156,8 @@ export default function LoginPage({ onLogin }) {
         {/* Left Hero Showcase */}
         <div style={{
           padding: '3rem 2.5rem',
-          background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(10, 15, 29, 0.9))',
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+          background: '#f8fafc',
+          borderRight: '1px solid var(--border-subtle)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -135,17 +169,17 @@ export default function LoginPage({ onLogin }) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              background: '#eff6ff',
+              border: '1px solid #bfdbfe',
               borderRadius: '9999px',
               padding: '0.35rem 0.85rem',
               fontSize: '0.75rem',
-              color: '#38bdf8',
+              color: '#1d4ed8',
               fontWeight: '600',
               marginBottom: '1.75rem'
             }}>
-              <ShieldCheck size={14} color="#38bdf8" />
-              <span>AROGYA-TRIAGE • MCP v2.0 CLINICAL GATEWAY</span>
+              <ShieldCheck size={14} color="#2563eb" />
+              <span>AROGYA-TRIAGE • CLINICAL GATEWAY</span>
             </div>
 
             {/* Glowing Brand Title */}
@@ -155,11 +189,9 @@ export default function LoginPage({ onLogin }) {
               lineHeight: '1.15',
               letterSpacing: '-0.03em',
               marginBottom: '1rem',
-              background: 'linear-gradient(135deg, #ffffff 30%, #94a3b8 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: 'var(--text-primary)'
             }}>
-              Human-in-the-Loop Clinical Intelligence
+              Clinical Decision Support
             </h1>
 
             <p style={{
@@ -173,11 +205,12 @@ export default function LoginPage({ onLogin }) {
 
             {/* Role Capabilities Live Preview */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: `1px solid ${activePersona.color}33`,
+              background: '#ffffff',
+              border: '1px solid var(--border-subtle)',
               borderRadius: '14px',
               padding: '1.25rem',
               marginBottom: '1.5rem',
+              boxShadow: 'var(--shadow-sm)',
               transition: 'all 0.3s ease'
             }}>
               <div style={{
@@ -197,12 +230,12 @@ export default function LoginPage({ onLogin }) {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {activePersona.highlights.map((item, idx) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: '#f1f5f9' }}>
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--text-primary)' }}>
                     <div style={{
                       width: '18px',
                       height: '18px',
                       borderRadius: '50%',
-                      background: `${activePersona.color}22`,
+                      background: `${activePersona.color}15`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -224,12 +257,12 @@ export default function LoginPage({ onLogin }) {
             justifyContent: 'space-between',
             fontSize: '0.75rem',
             color: 'var(--text-muted)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--border-subtle)',
             paddingTop: '1.25rem'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <span className="pulse-beacon-green" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }}></span>
-              <span style={{ color: '#86efac' }}>Edge Cache Synced</span>
+              <span className="pulse-beacon-green" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></span>
+              <span style={{ color: '#059669' }}>Edge Cache Synced</span>
             </div>
             <span>Sundargarh • Rourkela PHC</span>
           </div>
@@ -238,14 +271,14 @@ export default function LoginPage({ onLogin }) {
         {/* Right Form Card */}
         <div style={{
           padding: '3rem 2.5rem',
-          background: 'rgba(15, 23, 42, 0.85)',
+          background: '#ffffff',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center'
         }}>
           {/* Header inside Form */}
           <div style={{ marginBottom: '1.75rem' }}>
-            <h2 style={{ fontSize: '1.45rem', fontWeight: '800', color: '#ffffff', marginBottom: '0.35rem' }}>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
               Authenticate Role
             </h2>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
@@ -253,15 +286,15 @@ export default function LoginPage({ onLogin }) {
             </p>
           </div>
 
-          {/* God-Level 3-Tab Segmented Selector */}
+          {/* God-Level Segmented Role Selector */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '0.5rem',
-            background: 'rgba(8, 12, 22, 0.9)',
-            padding: '0.4rem',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gap: '0.35rem',
+            background: '#f1f5f9',
+            padding: '0.35rem',
             borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: '1px solid var(--border-subtle)',
             marginBottom: '1.75rem'
           }}>
             {/* Doctor Tab */}
@@ -272,19 +305,19 @@ export default function LoginPage({ onLogin }) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.75rem 0.5rem',
-                background: selectedRole === 'doctor' ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                border: selectedRole === 'doctor' ? '1px solid #3b82f6' : '1px solid transparent',
+                gap: '0.3rem',
+                padding: '0.65rem 0.35rem',
+                background: selectedRole === 'doctor' ? '#ffffff' : 'transparent',
+                border: selectedRole === 'doctor' ? '1px solid #bfdbfe' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'doctor' ? '#ffffff' : 'var(--text-secondary)',
+                color: selectedRole === 'doctor' ? '#1d4ed8' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'doctor' ? '0 0 15px rgba(59, 130, 246, 0.3)' : 'none'
+                boxShadow: selectedRole === 'doctor' ? '0 1px 4px rgba(37, 99, 235, 0.15)' : 'none'
               }}
             >
-              <Stethoscope size={20} color={selectedRole === 'doctor' ? '#60a5fa' : 'currentColor'} />
-              <span style={{ fontSize: '0.8rem', fontWeight: '700' }}>Doctor</span>
+              <Stethoscope size={18} color={selectedRole === 'doctor' ? '#2563eb' : 'currentColor'} />
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Doctor</span>
             </button>
 
             {/* ANM Tab */}
@@ -295,19 +328,65 @@ export default function LoginPage({ onLogin }) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.75rem 0.5rem',
-                background: selectedRole === 'anm_gnm' ? 'rgba(245, 158, 11, 0.2)' : 'transparent',
-                border: selectedRole === 'anm_gnm' ? '1px solid #f59e0b' : '1px solid transparent',
+                gap: '0.3rem',
+                padding: '0.65rem 0.35rem',
+                background: selectedRole === 'anm_gnm' ? '#ffffff' : 'transparent',
+                border: selectedRole === 'anm_gnm' ? '1px solid #fde68a' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'anm_gnm' ? '#ffffff' : 'var(--text-secondary)',
+                color: selectedRole === 'anm_gnm' ? '#b45309' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'anm_gnm' ? '0 0 15px rgba(245, 158, 11, 0.3)' : 'none'
+                boxShadow: selectedRole === 'anm_gnm' ? '0 1px 4px rgba(245, 158, 11, 0.15)' : 'none'
               }}
             >
-              <Activity size={20} color={selectedRole === 'anm_gnm' ? '#fbbf24' : 'currentColor'} />
-              <span style={{ fontSize: '0.8rem', fontWeight: '700' }}>ANM / GNM</span>
+              <Activity size={18} color={selectedRole === 'anm_gnm' ? '#d97706' : 'currentColor'} />
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>ANM/GNM</span>
+            </button>
+
+            {/* Vet Officer Tab */}
+            <button
+              type="button"
+              onClick={() => handleRoleSelect('vet_officer')}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.3rem',
+                padding: '0.65rem 0.35rem',
+                background: selectedRole === 'vet_officer' ? '#ffffff' : 'transparent',
+                border: selectedRole === 'vet_officer' ? '1px solid #a7f3d0' : '1px solid transparent',
+                borderRadius: '9px',
+                color: selectedRole === 'vet_officer' ? '#047857' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: selectedRole === 'vet_officer' ? '0 1px 4px rgba(16, 185, 129, 0.15)' : 'none'
+              }}
+            >
+              <HeartPulse size={18} color={selectedRole === 'vet_officer' ? '#059669' : 'currentColor'} />
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Vet Officer</span>
+            </button>
+
+            {/* Paravet Tab */}
+            <button
+              type="button"
+              onClick={() => handleRoleSelect('paravet')}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.3rem',
+                padding: '0.65rem 0.35rem',
+                background: selectedRole === 'paravet' ? '#ffffff' : 'transparent',
+                border: selectedRole === 'paravet' ? '1px solid #a5f3fc' : '1px solid transparent',
+                borderRadius: '9px',
+                color: selectedRole === 'paravet' ? '#0e7490' : 'var(--text-secondary)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: selectedRole === 'paravet' ? '0 1px 4px rgba(6, 182, 212, 0.15)' : 'none'
+              }}
+            >
+              <ShieldCheck size={18} color={selectedRole === 'paravet' ? '#0891b2' : 'currentColor'} />
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Paravet</span>
             </button>
 
             {/* Patient Tab */}
@@ -318,19 +397,19 @@ export default function LoginPage({ onLogin }) {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.75rem 0.5rem',
-                background: selectedRole === 'patient' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-                border: selectedRole === 'patient' ? '1px solid #10b981' : '1px solid transparent',
+                gap: '0.3rem',
+                padding: '0.65rem 0.35rem',
+                background: selectedRole === 'patient' ? '#ffffff' : 'transparent',
+                border: selectedRole === 'patient' ? '1px solid #ddd6fe' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'patient' ? '#ffffff' : 'var(--text-secondary)',
+                color: selectedRole === 'patient' ? '#6d28d9' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'patient' ? '0 0 15px rgba(16, 185, 129, 0.3)' : 'none'
+                boxShadow: selectedRole === 'patient' ? '0 1px 4px rgba(139, 92, 246, 0.15)' : 'none'
               }}
             >
-              <User size={20} color={selectedRole === 'patient' ? '#34d399' : 'currentColor'} />
-              <span style={{ fontSize: '0.8rem', fontWeight: '700' }}>Patient</span>
+              <User size={18} color={selectedRole === 'patient' ? '#7c3aed' : 'currentColor'} />
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Patient</span>
             </button>
           </div>
 
@@ -341,6 +420,8 @@ export default function LoginPage({ onLogin }) {
                 <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.45rem' }}>
                   {selectedRole === 'doctor' && 'Medical Council Reg. Number'}
                   {selectedRole === 'anm_gnm' && 'National Health Mission Staff ID'}
+                  {selectedRole === 'vet_officer' && 'Veterinary Council Reg. Number (VCI / OVCI)'}
+                  {selectedRole === 'paravet' && 'Livestock Inspector / Paravet ID'}
                   {selectedRole === 'patient' && '14-Digit ABHA / Mobile Number'}
                 </label>
                 <input

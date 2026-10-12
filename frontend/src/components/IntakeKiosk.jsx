@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Mic, MicOff, Upload, FileText, CheckCircle2, 
   AlertTriangle, ShieldCheck, Heart, User, MapPin, 
-  Sparkles, ArrowRight, Eye, RefreshCw, Volume2 
+  Sparkles, ArrowRight, Eye, RefreshCw, Volume2, Key, X 
 } from 'lucide-react';
 
 export default function IntakeKiosk({ 
@@ -20,6 +20,23 @@ export default function IntakeKiosk({
   // Vernacular Voice State
   const [vernacularLang, setVernacularLang] = useState('odia');
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [isTranscribingAudio, setIsTranscribingAudio] = useState(false);
+  const [transcribeNotice, setTranscribeNotice] = useState(null);
+  const [sarvamApiKey, setSarvamApiKey] = useState(() => localStorage.getItem('sarvam_api_key') || '');
+  const [tempApiKey, setTempApiKey] = useState('');
+  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const [sarvamStatus, setSarvamStatus] = useState(null);
+  const [isTestingKey, setIsTestingKey] = useState(false);
+  const [keyTestReport, setKeyTestReport] = useState(null);
+
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const recordingTimerRef = useRef(null);
+  const streamRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const audioFileInputRef = useRef(null);
+
   const [symptomsRaw, setSymptomsRaw] = useState('');
   const [translatedEnglish, setTranslatedEnglish] = useState('');
   const [extractedSymptoms, setExtractedSymptoms] = useState([]);
@@ -46,6 +63,23 @@ export default function IntakeKiosk({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
   const fileInputRef = useRef(null);
+
+  // Sync Sarvam Voice pipeline configuration from backend
+  const fetchVoiceStatus = async () => {
+    try {
+      const res = await fetch('/api/voice/status');
+      if (res.ok) {
+        const data = await res.json();
+        setSarvamStatus(data);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch voice status:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchVoiceStatus();
+  }, []);
 
   // Load preset scenario when triggered from Navbar or parent
   useEffect(() => {
@@ -126,34 +160,234 @@ export default function IntakeKiosk({
     }
   }, [scenarioData]);
 
-  // Voice recording toggle / simulation
-  const handleToggleRecord = () => {
-    if (isRecording) {
-      setIsRecording(false);
-      // Process voice text if empty
-      if (!symptomsRaw) {
-        if (vernacularLang === 'odia') {
-          handleSelectVoicePreset('TC-01');
-        } else if (vernacularLang === 'hindi') {
-          handleSelectVoicePreset('TC-02');
-        } else {
-          handleSelectVoicePreset('TC-03');
+  // Real Vernacular Audio Recording using MediaRecorder & Sarvam AI STT
+  const handleStartRecording = async () => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Microphone access is not available in this browser context. Please use the audio file upload or vernacular presets.');
+        return;
+      }
+      setTranscribeNotice(null);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      let mimeType = 'audio/webm';
+      if (typeof MediaRecorder !== 'undefined') {
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+          mimeType = 'audio/webm;codecs=opus';
+        } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+          mimeType = 'audio/webm';
+        } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+          mimeType = 'audio/ogg;codecs=opus';
+        } else if (MediaRecorder.isTypeSupported('audio/wav')) {
+          mimeType = 'audio/wav';
         }
       }
-    } else {
-      setIsRecording(true);
-      // Auto-stop after 3.5 seconds with simulated transcription
-      setTimeout(() => {
-        setIsRecording(false);
-        if (vernacularLang === 'odia') {
-          handleSelectVoicePreset('TC-01');
-        } else if (vernacularLang === 'hindi') {
-          handleSelectVoicePreset('TC-02');
-        } else {
-          handleSelectVoicePreset('TC-03');
+
+      const recorder = new MediaRecorder(stream, { mimeType });
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
         }
-      }, 3500);
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        if (audioBlob.size > 200) {
+          await sendAudioToTranscribe(audioBlob, mimeType);
+        } else {
+          setTranscribeNotice({
+            type: 'warning',
+            message: 'Recording was very short. Click the mic to speak again or use sample presets.'
+          });
+        }
+      };
+
+      recorder.start(250);
+      mediaRecorderRef.current = recorder;
+      setIsRecording(true);
+      setRecordingSeconds(0);
+
+      // Interval counter
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => prev + 1);
+      }, 1000);
+
+      // Browser live speech recognition (Chromium / Edge / Safari Web Speech API)
+      try {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRec) {
+          const rec = new SpeechRec();
+          rec.continuous = true;
+          rec.interimResults = true;
+          rec.lang = vernacularLang === 'odia' ? 'or-IN' : (vernacularLang === 'hindi' ? 'hi-IN' : 'en-IN');
+          rec.onresult = (evt) => {
+            let streamWords = '';
+            for (let i = 0; i < evt.results.length; ++i) {
+              streamWords += evt.results[i][0].transcript + ' ';
+            }
+            if (streamWords.trim()) {
+              setSymptomsRaw(streamWords.trim());
+              setTranslatedEnglish(streamWords.trim());
+            }
+          };
+          rec.onerror = (e) => {
+            console.warn('Speech recognition interim notice:', e);
+          };
+          rec.start();
+          recognitionRef.current = rec;
+        }
+      } catch (speechErr) {
+        console.warn('SpeechRecognition unavailable in this context:', speechErr);
+      }
+    } catch (err) {
+      console.error('Microphone recording error:', err);
+      alert(`Could not access microphone: ${err.message || 'Permission denied'}.\nYou can also type symptoms directly into the box.`);
     }
+  };
+
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
+      recognitionRef.current = null;
+    }
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    setIsRecording(false);
+
+    // Auto-populate extracted symptoms from live spoken text if available
+    if (symptomsRaw && symptomsRaw.trim()) {
+      const tokens = symptomsRaw.split(/[,;\.\n]+/).map(s => s.trim()).filter(Boolean);
+      setExtractedSymptoms(tokens.slice(0, 5));
+      setSymptomTimeline([`Reported onset: ${symptomsRaw.trim()}`]);
+      if (!translatedEnglish) {
+        setTranslatedEnglish(symptomsRaw.trim());
+      }
+    }
+  };
+
+  const handleToggleRecord = () => {
+    if (isRecording) {
+      handleStopRecording();
+    } else {
+      handleStartRecording();
+    }
+  };
+
+  // Submit audio blob to Sarvam AI STT Endpoint (Optional Enhancement, Never overwrites user's spoken text on failure)
+  const sendAudioToTranscribe = async (audioBlobOrFile, mimeType) => {
+    if (!sarvamApiKey && !(sarvamStatus && sarvamStatus.sarvam_configured)) {
+      // No external key needed; user's direct speech is already in symptomsRaw
+      return;
+    }
+
+    setIsTranscribingAudio(true);
+    const formData = new FormData();
+    const ext = (mimeType && mimeType.includes('webm')) ? 'webm' : ((mimeType && mimeType.includes('wav')) ? 'wav' : 'mp3');
+    formData.append('file', audioBlobOrFile, `patient_voice_${Date.now()}.${ext}`);
+    formData.append('language', vernacularLang);
+    if (sarvamApiKey) {
+      formData.append('api_key', sarvamApiKey);
+    }
+
+    try {
+      const headers = {};
+      if (sarvamApiKey) {
+        headers['X-Sarvam-Key'] = sarvamApiKey;
+      }
+      const res = await fetch('/api/voice/transcribe-audio', {
+        method: 'POST',
+        headers: headers,
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.transcription) {
+        setSymptomsRaw(data.transcription);
+        if (data.translated_english) setTranslatedEnglish(data.translated_english);
+        if (data.extracted_symptoms) setExtractedSymptoms(data.extracted_symptoms);
+        if (data.timeline) setSymptomTimeline(data.timeline);
+      }
+    } catch (err) {
+      console.warn('Backend audio enhancement skipped, preserving spoken input:', err);
+      // NEVER override user's live transcribed text with presets!
+    } finally {
+      setIsTranscribingAudio(false);
+    }
+  };
+
+  const handleAudioFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    sendAudioToTranscribe(file, file.type || 'audio/wav');
+  };
+
+  const handleSaveApiKey = async (keyToSave) => {
+    const trimmed = (keyToSave || '').trim();
+    localStorage.setItem('sarvam_api_key', trimmed);
+    setSarvamApiKey(trimmed);
+
+    try {
+      await fetch('/api/voice/configure-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: trimmed })
+      });
+      await fetchVoiceStatus();
+    } catch (e) {
+      console.warn('Failed to sync key to backend:', e);
+    }
+    setIsKeyModalOpen(false);
+  };
+
+  const handleClearApiKey = async () => {
+    localStorage.removeItem('sarvam_api_key');
+    setSarvamApiKey('');
+    setTempApiKey('');
+    try {
+      await fetch('/api/voice/configure-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: '' })
+      });
+      await fetchVoiceStatus();
+    } catch (e) {}
+    setIsKeyModalOpen(false);
+  };
+
+  const handleTestApiKey = async (keyToTest) => {
+    setIsTestingKey(true);
+    setKeyTestReport(null);
+    try {
+      const active = (keyToTest || sarvamApiKey || '').trim();
+      const res = await fetch('/api/voice/test-sarvam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: active || undefined })
+      });
+      const data = await res.json();
+      setKeyTestReport(data);
+    } catch (err) {
+      setKeyTestReport({ valid: false, error: err.message });
+    } finally {
+      setIsTestingKey(false);
+    }
+  };
+
+  const formatTimer = (sec) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
   const handleSelectVoicePreset = async (presetId) => {
@@ -304,6 +538,7 @@ export default function IntakeKiosk({
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <MapPin size={18} color="#38bdf8" />
               <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>Triage Intake Node & Demographics</h2>
+              <span className="badge badge-green" style={{ fontSize: '0.7rem' }}>Live Human Operator Mode</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#86efac', fontSize: '0.75rem', fontWeight: '600' }}>
               <ShieldCheck size={16} />
@@ -384,67 +619,78 @@ export default function IntakeKiosk({
 
         {/* Card 2: Vernacular Voice Recorder & Transcription Review Box (PRD FR-1.1 & FR-1.4) */}
         <div className="glass-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
+          <input 
+            type="file" 
+            ref={audioFileInputRef} 
+            accept="audio/*" 
+            style={{ display: 'none' }} 
+            onChange={handleAudioFileUpload} 
+          />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Volume2 size={18} color="#a855f7" />
-              <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>Vernacular Voice Intake (ASHA / Frontline)</h2>
+              <Volume2 size={18} color="#3b82f6" />
+              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>Voice & Chief Complaints</h2>
             </div>
-            {/* Language Selector */}
-            <div style={{ display: 'flex', gap: '0.35rem', background: '#0f172a', padding: '0.2rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-              <button 
-                type="button"
-                onClick={() => setVernacularLang('odia')}
-                style={{
-                  padding: '0.25rem 0.65rem',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: vernacularLang === 'odia' ? '#2563eb' : 'transparent',
-                  color: vernacularLang === 'odia' ? '#ffffff' : 'var(--text-secondary)',
-                  cursor: 'pointer'
-                }}
-              >
-                ଓଡ଼ିଆ (Odia)
-              </button>
-              <button 
-                type="button"
-                onClick={() => setVernacularLang('hindi')}
-                style={{
-                  padding: '0.25rem 0.65rem',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: vernacularLang === 'hindi' ? '#2563eb' : 'transparent',
-                  color: vernacularLang === 'hindi' ? '#ffffff' : 'var(--text-secondary)',
-                  cursor: 'pointer'
-                }}
-              >
-                हिन्दी (Hindi)
-              </button>
-              <button 
-                type="button"
-                onClick={() => setVernacularLang('english')}
-                style={{
-                  padding: '0.25rem 0.65rem',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: vernacularLang === 'english' ? '#2563eb' : 'transparent',
-                  color: vernacularLang === 'english' ? '#ffffff' : 'var(--text-secondary)',
-                  cursor: 'pointer'
-                }}
-              >
-                English (India)
-              </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {/* Language Selector */}
+              <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(9, 11, 16, 0.6)', padding: '0.2rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+                <button 
+                  type="button"
+                  onClick={() => setVernacularLang('odia')}
+                  style={{
+                    padding: '0.25rem 0.65rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: vernacularLang === 'odia' ? '#2563eb' : 'transparent',
+                    color: vernacularLang === 'odia' ? '#ffffff' : 'var(--text-secondary)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ଓଡ଼ିଆ (Odia)
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setVernacularLang('hindi')}
+                  style={{
+                    padding: '0.25rem 0.65rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: vernacularLang === 'hindi' ? '#2563eb' : 'transparent',
+                    color: vernacularLang === 'hindi' ? '#ffffff' : 'var(--text-secondary)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  हिन्दी (Hindi)
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setVernacularLang('english')}
+                  style={{
+                    padding: '0.25rem 0.65rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: vernacularLang === 'english' ? '#2563eb' : 'transparent',
+                    color: vernacularLang === 'english' ? '#ffffff' : 'var(--text-secondary)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  English
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Voice Recording Interactive Bar */}
           <div style={{
-            background: isRecording ? 'rgba(239, 68, 68, 0.1)' : '#0c1220',
+            background: isRecording ? 'rgba(239, 68, 68, 0.08)' : 'rgba(14, 18, 26, 0.7)',
             border: isRecording ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid var(--border-subtle)',
             borderRadius: '10px',
             padding: '0.85rem 1.25rem',
@@ -457,27 +703,34 @@ export default function IntakeKiosk({
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <button 
                 type="button" 
-                className={`btn ${isRecording ? 'btn-danger pulse-beacon-red' : 'btn-primary'}`}
-                style={{ width: '44px', height: '44px', borderRadius: '50%', padding: 0 }}
+                className={`btn ${isRecording ? 'btn-danger' : 'btn-primary'}`}
+                style={{ width: '46px', height: '46px', borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={handleToggleRecord}
-                title={isRecording ? 'Stop Recording' : 'Start Vernacular Voice Capture'}
+                title={isRecording ? 'Stop Recording' : 'Start Speaking'}
               >
                 {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
               </button>
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: '600', color: isRecording ? '#fca5a5' : '#ffffff' }}>
-                  {isRecording ? 'Listening to vernacular voice stream...' : 'Click mic to record or select vernacular preset'}
+                <div style={{ fontSize: '0.85rem', fontWeight: '600', color: isRecording ? '#f87171' : '#ffffff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  {isRecording ? (
+                    <>
+                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444' }}></span>
+                      <span>Listening... bolte rahiye, text niche live type ho raha hai ({formatTimer(recordingSeconds)})</span>
+                    </>
+                  ) : (
+                    <span>Click mic to speak symptoms — speech directly types below</span>
+                  )}
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  Active Audio Pipeline: Indic Whisper STT • Regional Lexicon Normalization
+                  Supports spoken Hindi, Odia, or English with live realtime transcription
                 </div>
               </div>
             </div>
 
-            {/* Soundwave animation */}
-            <div style={{ display: 'flex', alignItems: 'center', height: '28px' }}>
+            {/* Soundwave animation or action buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {isRecording ? (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', height: '28px' }}>
                   <span className="wave-bar" style={{ animationDelay: '0.1s' }}></span>
                   <span className="wave-bar" style={{ animationDelay: '0.3s' }}></span>
                   <span className="wave-bar" style={{ animationDelay: '0.2s' }}></span>
@@ -485,25 +738,34 @@ export default function IntakeKiosk({
                   <span className="wave-bar" style={{ animationDelay: '0.15s' }}></span>
                   <span className="wave-bar" style={{ animationDelay: '0.4s' }}></span>
                   <span className="wave-bar" style={{ animationDelay: '0.25s' }}></span>
-                </>
+                </div>
               ) : (
-                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
                   <button 
                     type="button" 
                     className="btn btn-outline" 
-                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.72rem' }}
-                    onClick={() => handleSelectVoicePreset('TC-01')}
+                    style={{ padding: '0.25rem 0.55rem', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    onClick={() => audioFileInputRef.current && audioFileInputRef.current.click()}
+                    title="Upload recorded audio note from patient (.wav, .mp3, .m4a, .webm)"
                   >
-                    Odia Sample
+                    <Upload size={12} /> Upload Audio File
                   </button>
-                  <button 
-                    type="button" 
-                    className="btn btn-outline" 
-                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.72rem' }}
-                    onClick={() => handleSelectVoicePreset('TC-02')}
-                  >
-                    Hindi Sample
-                  </button>
+                  {symptomsRaw && (
+                    <button 
+                      type="button" 
+                      className="btn btn-outline" 
+                      style={{ padding: '0.25rem 0.5rem', fontSize: '0.72rem' }}
+                      onClick={() => {
+                        setSymptomsRaw('');
+                        setTranslatedEnglish('');
+                        setExtractedSymptoms([]);
+                        setSymptomTimeline([]);
+                      }}
+                      title="Clear spoken text"
+                    >
+                      Clear Spoken Text
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -530,8 +792,8 @@ export default function IntakeKiosk({
 
           {/* Clinical English Normalization & Extracted Symptoms Chips */}
           {translatedEnglish && (
-            <div style={{ background: '#0f172a', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', marginBottom: '0.85rem' }}>
-              <div style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: '600', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+            <div style={{ background: '#eff6ff', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #bfdbfe', marginBottom: '0.85rem' }}>
+              <div style={{ fontSize: '0.72rem', color: '#1d4ed8', fontWeight: '700', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
                 Normalized Clinical Translation:
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
@@ -551,14 +813,14 @@ export default function IntakeKiosk({
 
           {/* Chronological Symptom Timeline */}
           {symptomTimeline.length > 0 && (
-            <div style={{ background: '#090d16', padding: '0.65rem 1rem', borderRadius: '8px', border: '1px dashed rgba(255, 255, 255, 0.15)' }}>
+            <div style={{ background: '#f8fafc', padding: '0.65rem 1rem', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>
                 Chronological Symptom Progression:
               </span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.78rem' }}>
                 {symptomTimeline.map((step, idx) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8' }}></span>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563eb' }}></span>
                     <span style={{ color: 'var(--text-secondary)' }}>{step}</span>
                   </div>
                 ))}
@@ -574,25 +836,26 @@ export default function IntakeKiosk({
               <FileText size={18} color="#06b6d4" />
               <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>Multimodal Lab Slip Ingestion & OCR</h2>
             </div>
-            <div style={{ display: 'flex', gap: '0.35rem' }}>
-              <button 
-                type="button"
-                className="btn btn-outline" 
-                style={{ padding: '0.25rem 0.5rem', fontSize: '0.72rem' }}
-                onClick={() => handleSelectSyntheticSlip('TC-01')}
-                title="Degraded Paper CBC Slip with Platelets 16,000"
-              >
-                Degraded Slip (TC-01)
-              </button>
-              <button 
-                type="button"
-                className="btn btn-outline" 
-                style={{ padding: '0.25rem 0.5rem', fontSize: '0.72rem' }}
-                onClick={() => handleSelectSyntheticSlip('TC-02')}
-                title="Dengue NS1 Antigen Slip"
-              >
-                Dengue Slip (TC-02)
-              </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <span className="badge badge-blue" style={{ fontSize: '0.7rem' }}>
+                Tabular OCR Parser Ready
+              </span>
+              {labImagePreview && (
+                <button 
+                  type="button"
+                  className="btn btn-outline" 
+                  style={{ padding: '0.2rem 0.45rem', fontSize: '0.7rem' }}
+                  onClick={() => {
+                    setLabImagePreview(null);
+                    setLabParameters({});
+                    setTabularItems([]);
+                    setLabFile(null);
+                  }}
+                  title="Remove uploaded lab slip"
+                >
+                  Clear Slip
+                </button>
+              )}
             </div>
           </div>
 
@@ -607,16 +870,16 @@ export default function IntakeKiosk({
           <div 
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
             style={{
-              border: '2px dashed rgba(255, 255, 255, 0.15)',
+              border: '2px dashed #cbd5e1',
               borderRadius: '10px',
               padding: '1.5rem',
               textAlign: 'center',
               cursor: 'pointer',
-              background: '#0a0f1d',
+              background: '#f8fafc',
               transition: 'border-color 0.2s'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#38bdf8'}
-            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#2563eb'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
           >
             <Upload size={28} color="#64748b" style={{ margin: '0 auto 0.5rem' }} />
             <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)' }}>
@@ -629,7 +892,7 @@ export default function IntakeKiosk({
 
           {/* OCR Processing Indicator */}
           {isProcessingOCR && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '1rem', color: '#38bdf8', fontSize: '0.85rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '1rem', color: '#2563eb', fontSize: '0.85rem' }}>
               <RefreshCw size={16} className="pulse-beacon-yellow" />
               <span>Scanning report slip, isolating tabular entries & verifying units...</span>
             </div>
@@ -638,7 +901,7 @@ export default function IntakeKiosk({
           {/* Tabular Parameters Extracted Preview */}
           {tabularItems.length > 0 && (
             <div style={{ marginTop: '1rem', overflowX: 'auto' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: '600', color: '#38bdf8', marginBottom: '0.35rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: '600', color: '#2563eb', marginBottom: '0.35rem' }}>
                 OCR Tabular Extraction Findings:
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
@@ -653,9 +916,9 @@ export default function IntakeKiosk({
                   {tabularItems.map((item, idx) => {
                     const isCrit = item.parameter.toLowerCase().includes('platelet') && Number(item.value) < 20000;
                     return (
-                      <tr key={idx} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                        <td style={{ padding: '0.4rem', fontWeight: '500' }}>{item.parameter}</td>
-                        <td style={{ padding: '0.4rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isCrit ? '#ef4444' : '#ffffff' }}>
+                      <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                        <td style={{ padding: '0.4rem', fontWeight: '500', color: 'var(--text-primary)' }}>{item.parameter}</td>
+                        <td style={{ padding: '0.4rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isCrit ? '#dc2626' : 'var(--text-primary)' }}>
                           {item.value}
                         </td>
                         <td style={{ padding: '0.4rem' }}>
@@ -692,8 +955,8 @@ export default function IntakeKiosk({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
             {/* SpO2 */}
             <div style={{
-              background: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? 'rgba(239, 68, 68, 0.15)' : '#0f172a',
-              border: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '1px solid #ef4444' : '1px solid var(--border-subtle)',
+              background: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '#fef2f2' : '#f8fafc',
+              border: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '1px solid #fecaca' : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               padding: '0.75rem'
             }}>
@@ -709,15 +972,15 @@ export default function IntakeKiosk({
                 onChange={(e) => setVitals({ ...vitals, spo2: e.target.value })}
                 style={{ fontSize: '1.1rem', fontWeight: '700', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}
               />
-              <span style={{ fontSize: '0.68rem', color: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '#fca5a5' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.68rem', color: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '#dc2626' : 'var(--text-muted)' }}>
                 Danger Zone: &lt; 90% (Hypoxemia)
               </span>
             </div>
 
             {/* Pulse */}
             <div style={{
-              background: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? 'rgba(239, 68, 68, 0.15)' : '#0f172a',
-              border: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '1px solid #ef4444' : '1px solid var(--border-subtle)',
+              background: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '#fef2f2' : '#f8fafc',
+              border: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '1px solid #fecaca' : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               padding: '0.75rem'
             }}>
@@ -733,13 +996,13 @@ export default function IntakeKiosk({
                 onChange={(e) => setVitals({ ...vitals, pulse: e.target.value })}
                 style={{ fontSize: '1.1rem', fontWeight: '700', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}
               />
-              <span style={{ fontSize: '0.68rem', color: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '#fca5a5' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.68rem', color: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '#dc2626' : 'var(--text-muted)' }}>
                 Danger Zone: &gt;= 120 bpm (Tachycardia)
               </span>
             </div>
 
             {/* Blood Pressure Systolic */}
-            <div style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
+            <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                 <span>Systolic BP</span>
                 <span>mmHg</span>
@@ -758,7 +1021,7 @@ export default function IntakeKiosk({
             </div>
 
             {/* Blood Pressure Diastolic */}
-            <div style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
+            <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                 <span>Diastolic BP</span>
                 <span>mmHg</span>
@@ -778,8 +1041,8 @@ export default function IntakeKiosk({
 
             {/* Temperature */}
             <div style={{
-              background: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? 'rgba(245, 158, 11, 0.15)' : '#0f172a',
-              border: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '1px solid #f59e0b' : '1px solid var(--border-subtle)',
+              background: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '#fffbeb' : '#f8fafc',
+              border: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '1px solid #fde68a' : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               padding: '0.75rem'
             }}>
@@ -789,20 +1052,20 @@ export default function IntakeKiosk({
               </div>
               <input 
                 type="number" 
-                step="0.1"
+                step="0.1" 
                 className="form-input" 
                 placeholder="e.g. 103.4" 
                 value={vitals.temperature}
                 onChange={(e) => setVitals({ ...vitals, temperature: e.target.value })}
                 style={{ fontSize: '1.1rem', fontWeight: '700', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}
               />
-              <span style={{ fontSize: '0.68rem', color: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '#fde68a' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.68rem', color: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '#d97706' : 'var(--text-muted)' }}>
                 Febrile: &gt;= 101.5°F
               </span>
             </div>
 
             {/* Respiration Rate */}
-            <div style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
+            <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                 <span>Respiration Rate</span>
                 <span>/min</span>
@@ -919,6 +1182,141 @@ export default function IntakeKiosk({
           </div>
         )}
       </div>
+
+      {/* Sarvam AI Speech-to-Text API Key Configuration Modal */}
+      {isKeyModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsKeyModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px' }}>
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <div style={{ background: 'rgba(59, 130, 246, 0.15)', padding: '0.5rem', borderRadius: '10px' }}>
+                  <Key size={20} color="#38bdf8" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: '700' }}>Sarvam AI Indic Speech & Language API</h3>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                    STT (`saaras:v3`) • Translation (`od/hi/en`) • TTS (`bulbul:v3`)
+                  </span>
+                </div>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setIsKeyModalOpen(false)}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: '1.5' }}>
+              Paste your Sarvam AI Subscription Key to activate real-time speech recognition in 
+              <strong style={{ color: '#ffffff' }}> Odia (od-IN)</strong>, <strong style={{ color: '#ffffff' }}>Hindi (hi-IN)</strong>, and <strong style={{ color: '#ffffff' }}>English (en-IN)</strong>, with automated translation & voice feedback.
+            </p>
+
+            <div style={{ background: '#090d16', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '0.85rem', marginBottom: '1.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem', fontSize: '0.75rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Status:</span>
+                <span style={{ color: (sarvamApiKey || (sarvamStatus && sarvamStatus.sarvam_configured)) ? '#86efac' : '#f59e0b', fontWeight: '600' }}>
+                  {(sarvamApiKey || (sarvamStatus && sarvamStatus.sarvam_configured)) ? '✓ Key Configured & Active' : '⚠ Demo Fallback Active'}
+                </span>
+              </div>
+              {sarvamStatus?.api_key_masked && (
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  Active Key: {sarvamStatus.api_key_masked}
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>
+                Sarvam API Subscription Key (`api-subscription-key`)
+              </label>
+              <input 
+                type="password" 
+                className="form-input" 
+                placeholder="Enter your Sarvam AI Subscription Key..." 
+                value={tempApiKey !== '' ? tempApiKey : sarvamApiKey}
+                onChange={(e) => setTempApiKey(e.target.value)}
+                style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}
+              />
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.35rem' }}>
+                Get your key from dashboard.sarvam.ai. Key is saved locally in your browser and synced with the backend engine.
+              </span>
+            </div>
+
+            {/* Test Connection Diagnostic Box */}
+            {keyTestReport && (
+              <div style={{ 
+                background: keyTestReport.valid ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                border: `1px solid ${keyTestReport.valid ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`,
+                borderRadius: '8px',
+                padding: '0.75rem',
+                marginBottom: '1rem',
+                fontSize: '0.76rem'
+              }}>
+                <div style={{ fontWeight: '600', color: keyTestReport.valid ? '#10b981' : '#ef4444', marginBottom: '0.3rem' }}>
+                  {keyTestReport.valid ? '✓ Sarvam AI Connection Verified & Ready' : '✕ Connection Error'}
+                </div>
+                {keyTestReport.services && (
+                  <div style={{ color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                    <div>• <strong>Speech-to-Text:</strong> {keyTestReport.services.speech_to_text?.model} ({keyTestReport.services.speech_to_text?.status})</div>
+                    <div>• <strong>Translation:</strong> {keyTestReport.services.translation?.status} ({keyTestReport.services.translation?.latency_ms}ms)</div>
+                    <div>• <strong>Text-to-Speech:</strong> {keyTestReport.services.text_to_speech?.model} ({keyTestReport.services.text_to_speech?.status})</div>
+                  </div>
+                )}
+                {keyTestReport.error && (
+                  <div style={{ color: '#ef4444', marginTop: '0.2rem' }}>{keyTestReport.error}</div>
+                )}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+                  onClick={() => handleTestApiKey(tempApiKey !== '' ? tempApiKey : sarvamApiKey)}
+                  disabled={isTestingKey}
+                >
+                  {isTestingKey ? 'Testing...' : 'Test Connection'}
+                </button>
+                {sarvamApiKey && (
+                  <button 
+                    type="button" 
+                    className="btn btn-outline" 
+                    style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.4)', fontSize: '0.8rem', padding: '0.4rem 0.6rem' }}
+                    onClick={handleClearApiKey}
+                  >
+                    Clear Key
+                  </button>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button 
+                  type="button" 
+                  className="btn btn-outline" 
+                  style={{ fontSize: '0.8rem' }}
+                  onClick={() => setIsKeyModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  style={{ fontSize: '0.8rem' }}
+                  onClick={() => handleSaveApiKey(tempApiKey !== '' ? tempApiKey : sarvamApiKey)}
+                >
+                  Save & Activate Key
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

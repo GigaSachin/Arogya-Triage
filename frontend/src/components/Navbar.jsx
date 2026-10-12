@@ -1,9 +1,9 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { 
-  Activity, Database, Cpu, Stethoscope, 
-  User, LogIn, LogOut, HeartPulse, RefreshCw,
-  ShieldAlert, Sparkles, Layers
+  Activity, Stethoscope, User, LogOut, HeartPulse, RefreshCw, Layers, ShieldCheck, Zap, Sun, Moon
 } from 'lucide-react';
+import { playBlip, playScenarioChime } from '../utils/soundEffects';
 
 export default function Navbar({ 
   currentTab, 
@@ -15,308 +15,356 @@ export default function Navbar({
   onResetEngine, 
   activeQueueCount,
   criticalRedCount,
-  isResetting 
+  isResetting,
+  theme = 'light',
+  onToggleTheme,
+  onSetTheme
 }) {
+  const navItems = [
+    { id: 'gateway', label: 'Command Hub', icon: Layers },
+    { id: 'doctor', label: 'Doctor Queue', icon: Stethoscope, badge: activeQueueCount, isRed: criticalRedCount > 0 },
+    { id: 'kiosk', label: 'Patient Intake', icon: Activity },
+    { id: 'vet_dashboard', label: 'Vet Queue', icon: HeartPulse },
+    { id: 'vet_kiosk', label: 'Vet Intake', icon: Activity },
+    { id: 'patient', label: 'Patient Portal', icon: User },
+  ];
+
+  const handleTabClick = (tabId) => {
+    playBlip(720, 0.03);
+    setCurrentTab(tabId);
+  };
+
+  const handleScenarioClick = (scId) => {
+    playScenarioChime();
+    onLoadScenario(scId);
+  };
+
   return (
     <header style={{ 
-      borderBottom: '1px solid rgba(255, 255, 255, 0.08)', 
-      background: 'rgba(8, 12, 22, 0.85)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: '1px solid var(--border-subtle)', 
+      background: theme === 'dark' ? 'rgba(8, 14, 28, 0.88)' : 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(24px)',
+      WebkitBackdropFilter: 'blur(24px)',
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)'
+      boxShadow: theme === 'dark' ? '0 4px 30px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(56, 189, 248, 0.15)' : '0 1px 4px rgba(15, 23, 42, 0.05)'
     }}>
-      {/* Critical Red Case Triage Beacon if Active */}
-      {criticalRedCount > 0 && (
-        <div style={{
-          background: 'linear-gradient(90deg, #7f1d1d, #991b1b)',
-          color: '#fecaca',
-          padding: '0.3rem 1.5rem',
-          fontSize: '0.75rem',
-          fontWeight: '700',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.65rem',
-          letterSpacing: '0.02em',
-          borderBottom: '1px solid rgba(239, 68, 68, 0.5)'
-        }}>
-          <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }}></span>
-          <span>CRITICAL EMERGENCY: {criticalRedCount} Emergent (ESI Level 2) Case(s) awaiting Physician Stabilization</span>
-        </div>
-      )}
-
-      {/* Main Bar */}
+      {/* Top Main Bar */}
       <div style={{
-        padding: '0.75rem 2rem',
+        padding: '0.65rem 1.75rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1rem'
+        gap: '0.75rem'
       }}>
-        {/* Brand */}
-        <div 
-          onClick={onOpenLogin}
+        {/* Brand with Holographic Glow */}
+        <motion.div 
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {
+            playBlip(800, 0.03);
+            if (currentUser) setCurrentTab('gateway');
+            else onOpenLogin();
+          }}
           style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
         >
           <div style={{
-            width: '38px',
-            height: '38px',
+            width: '36px',
+            height: '36px',
             borderRadius: '10px',
-            background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)',
+            background: 'linear-gradient(135deg, #00f2fe 0%, #2563eb 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 16px rgba(59, 130, 246, 0.5)',
-            border: '1px solid rgba(147, 197, 253, 0.4)'
+            boxShadow: theme === 'dark' ? '0 0 16px rgba(0, 242, 254, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35)' : '0 2px 8px rgba(37, 99, 235, 0.3)',
+            border: '1px solid rgba(255, 255, 255, 0.3)'
           }}>
-            <HeartPulse size={22} color="#ffffff" />
+            <HeartPulse size={20} color="#ffffff" />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.03em', color: '#ffffff' }}>
+              <span style={{ 
+                fontSize: '1.2rem', 
+                fontWeight: '900', 
+                letterSpacing: '-0.02em', 
+                background: theme === 'dark' 
+                  ? 'linear-gradient(135deg, #ffffff 0%, #7dd3fc 100%)' 
+                  : 'linear-gradient(135deg, #0f172a 0%, #1e40af 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                textShadow: theme === 'dark' ? '0 0 20px rgba(56, 189, 248, 0.35)' : 'none'
+              }}>
                 AROGYA
               </span>
-              <span style={{
-                fontSize: '0.65rem',
-                fontWeight: '700',
-                background: 'rgba(56, 189, 248, 0.15)',
-                color: '#38bdf8',
-                border: '1px solid rgba(56, 189, 248, 0.3)',
-                padding: '0.1rem 0.45rem',
-                borderRadius: '4px'
+              <span style={{ 
+                fontSize: '0.75rem', 
+                fontWeight: '700', 
+                letterSpacing: '0.08em',
+                color: theme === 'dark' ? '#38bdf8' : '#2563eb',
+                background: theme === 'dark' ? 'rgba(56, 189, 248, 0.12)' : '#eff6ff',
+                padding: '0.15rem 0.45rem',
+                borderRadius: '6px',
+                border: theme === 'dark' ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid #bfdbfe'
               }}>
-                MCP v2.0
+                TRIAGE HUD
               </span>
             </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: '1' }}>
-              Clinical Triage Engine
-            </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Center: Segmented Navigation Pills */}
+        {/* Center: Segmented Cyber Navigation Deck with Sliding Hologram Indicator */}
         <nav style={{
           display: 'flex',
           alignItems: 'center',
           gap: '0.25rem',
-          background: 'rgba(15, 23, 42, 0.65)',
-          padding: '0.3rem',
+          background: theme === 'dark' ? 'rgba(10, 16, 32, 0.85)' : '#f1f5f9',
+          padding: '0.25rem 0.35rem',
           borderRadius: '12px',
-          border: '1px solid rgba(255, 255, 255, 0.06)'
+          border: '1px solid var(--border-subtle)',
+          boxShadow: theme === 'dark' ? 'inset 0 2px 6px rgba(0, 0, 0, 0.5)' : 'none',
+          position: 'relative',
+          overflowX: 'auto',
+          maxWidth: '100%'
         }}>
-          <button
-            onClick={() => setCurrentTab('login')}
-            style={{
-              padding: '0.45rem 0.95rem',
-              borderRadius: '9px',
-              border: 'none',
-              background: currentTab === 'login' ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-              color: currentTab === 'login' ? '#60a5fa' : 'var(--text-secondary)',
-              fontWeight: currentTab === 'login' ? '700' : '500',
-              fontSize: '0.82rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <LogIn size={14} />
-            Login
-          </button>
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = currentTab === item.id;
+            return (
+              <motion.button
+                key={item.id}
+                onClick={() => handleTabClick(item.id)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  position: 'relative',
+                  padding: '0.42rem 0.85rem',
+                  borderRadius: '9px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                  fontWeight: isActive ? '700' : '500',
+                  fontSize: '0.78rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  whiteSpace: 'nowrap',
+                  zIndex: 2,
+                  outline: 'none',
+                  transition: 'color 0.2s ease'
+                }}
+              >
+                {/* Framer Motion Sliding Pill Background with Neon Cyan / Emerald Edge */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTabPill"
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      borderRadius: '9px',
+                      background: item.id.includes('vet') 
+                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.15) 100%)' 
+                        : 'linear-gradient(135deg, rgba(0, 242, 254, 0.28) 0%, rgba(37, 99, 235, 0.2) 100%)',
+                      border: item.id.includes('vet') 
+                        ? '1px solid rgba(16, 185, 129, 0.6)' 
+                        : '1px solid rgba(0, 242, 254, 0.65)',
+                      boxShadow: item.id.includes('vet') 
+                        ? '0 0 16px rgba(16, 185, 129, 0.4)' 
+                        : '0 0 18px rgba(0, 242, 254, 0.45)',
+                      zIndex: -1
+                    }}
+                  />
+                )}
 
-          <button
-            onClick={() => setCurrentTab('doctor')}
-            style={{
-              padding: '0.45rem 0.95rem',
-              borderRadius: '9px',
-              border: 'none',
-              background: currentTab === 'doctor' ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-              color: currentTab === 'doctor' ? '#60a5fa' : 'var(--text-secondary)',
-              fontWeight: currentTab === 'doctor' ? '700' : '500',
-              fontSize: '0.82rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Stethoscope size={14} />
-            Doctor Queue
-            {activeQueueCount > 0 && (
-              <span style={{
-                background: criticalRedCount > 0 ? '#ef4444' : '#334155',
-                color: '#ffffff',
-                fontSize: '0.68rem',
-                fontWeight: '700',
-                padding: '0.1rem 0.45rem',
-                borderRadius: '9999px',
-                marginLeft: '0.2rem'
-              }}>
-                {activeQueueCount}
-              </span>
-            )}
-          </button>
+                <Icon 
+                  size={14} 
+                  color={isActive ? (item.id.includes('vet') ? '#34d399' : '#00f2fe') : 'currentColor'} 
+                />
+                <span>{item.label}</span>
 
-          <button
-            onClick={() => setCurrentTab('kiosk')}
-            style={{
-              padding: '0.45rem 0.95rem',
-              borderRadius: '9px',
-              border: 'none',
-              background: currentTab === 'kiosk' ? 'rgba(245, 158, 11, 0.25)' : 'transparent',
-              color: currentTab === 'kiosk' ? '#fbbf24' : 'var(--text-secondary)',
-              fontWeight: currentTab === 'kiosk' ? '700' : '500',
-              fontSize: '0.82rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Activity size={14} />
-            Intake Kiosk
-          </button>
-
-          <button
-            onClick={() => setCurrentTab('patient')}
-            style={{
-              padding: '0.45rem 0.95rem',
-              borderRadius: '9px',
-              border: 'none',
-              background: currentTab === 'patient' ? 'rgba(16, 185, 129, 0.25)' : 'transparent',
-              color: currentTab === 'patient' ? '#34d399' : 'var(--text-secondary)',
-              fontWeight: currentTab === 'patient' ? '700' : '500',
-              fontSize: '0.82rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <User size={14} />
-            Patient Portal
-          </button>
-
-          <button
-            onClick={() => setCurrentTab('surveillance')}
-            style={{
-              padding: '0.45rem 0.95rem',
-              borderRadius: '9px',
-              border: 'none',
-              background: currentTab === 'surveillance' ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-              color: currentTab === 'surveillance' ? '#60a5fa' : 'var(--text-secondary)',
-              fontWeight: currentTab === 'surveillance' ? '700' : '500',
-              fontSize: '0.82rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Database size={14} />
-            Surveillance
-          </button>
-
-          <button
-            onClick={() => setCurrentTab('mcp')}
-            style={{
-              padding: '0.45rem 0.95rem',
-              borderRadius: '9px',
-              border: 'none',
-              background: currentTab === 'mcp' ? 'rgba(59, 130, 246, 0.25)' : 'transparent',
-              color: currentTab === 'mcp' ? '#60a5fa' : 'var(--text-secondary)',
-              fontWeight: currentTab === 'mcp' ? '700' : '500',
-              fontSize: '0.82rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Cpu size={14} />
-            MCP
-          </button>
+                {item.badge > 0 && (
+                  <span style={{
+                    background: item.isRed ? '#ff2a5f' : '#334155',
+                    color: '#ffffff',
+                    fontSize: '0.65rem',
+                    fontWeight: '800',
+                    padding: '0.1rem 0.45rem',
+                    borderRadius: '9999px',
+                    marginLeft: '0.2rem',
+                    boxShadow: item.isRed ? '0 0 10px rgba(255, 42, 95, 0.7)' : 'none'
+                  }}>
+                    {item.badge}
+                  </span>
+                )}
+              </motion.button>
+            );
+          })}
         </nav>
 
-        {/* Right Action: PRD Scenarios & Persona State */}
+        {/* Right Action: Clean Demo Scenarios & User Profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-          {/* Quick PRD Test Vectors */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'rgba(255, 255, 255, 0.04)', padding: '0.25rem 0.4rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <button 
-              className="btn btn-outline" 
-              style={{ padding: '0.25rem 0.55rem', fontSize: '0.72rem', borderColor: 'rgba(239, 68, 68, 0.4)', color: '#fca5a5' }}
-              onClick={() => onLoadScenario('TC-01')}
-              title="Load TC-01 Red Sepsis"
-            >
-              TC-01
-            </button>
-            <button 
-              className="btn btn-outline" 
-              style={{ padding: '0.25rem 0.55rem', fontSize: '0.72rem', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#fde68a' }}
-              onClick={() => onLoadScenario('TC-02')}
-              title="Load TC-02 Yellow Febrile"
-            >
-              TC-02
-            </button>
-            <button 
-              className="btn btn-outline" 
-              style={{ padding: '0.25rem 0.55rem', fontSize: '0.72rem', borderColor: 'rgba(16, 185, 129, 0.4)', color: '#86efac' }}
-              onClick={() => onLoadScenario('TC-03')}
-              title="Load TC-03 Green OPD"
-            >
-              TC-03
-            </button>
-            <button 
-              className="btn btn-outline" 
-              style={{ padding: '0.25rem 0.45rem', fontSize: '0.72rem' }}
-              onClick={onResetEngine}
-              disabled={isResetting}
-              title="Reset synthetic state"
-            >
-              <RefreshCw size={12} className={isResetting ? 'pulse-beacon-yellow' : ''} />
-            </button>
-          </div>
-
-          {/* User state badge */}
-          {currentUser ? (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              borderRadius: '10px',
-              padding: '0.35rem 0.75rem'
-            }}>
-              <div style={{
-                width: '24px',
-                height: '24px',
-                borderRadius: '6px',
-                background: currentUser.color || '#3b82f6',
+          
+          {/* Critical Red Case Beacon if present */}
+          {criticalRedCount > 0 && (
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setCurrentTab('doctor')}
+              style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffffff'
-              }}>
-                {currentUser.role === 'doctor' && <Stethoscope size={13} />}
-                {currentUser.role === 'anm_gnm' && <Activity size={13} />}
-                {currentUser.role === 'patient' && <User size={13} />}
-              </div>
-              <div style={{ fontSize: '0.8rem', fontWeight: '700', color: '#ffffff' }}>
+                gap: '0.45rem',
+                background: 'rgba(255, 42, 95, 0.18)',
+                border: '1px solid rgba(255, 42, 95, 0.6)',
+                borderRadius: '8px',
+                padding: '0.3rem 0.65rem',
+                cursor: 'pointer',
+                boxShadow: '0 0 14px rgba(255, 42, 95, 0.4)'
+              }}
+            >
+              <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff2a5f' }}></span>
+              <span style={{ fontSize: '0.72rem', color: '#ff6b8b', fontWeight: '800' }}>
+                {criticalRedCount} CRITICAL RED
+              </span>
+            </motion.div>
+          )}
+
+          {/* Live Operator Mode & Clear Queue */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.45rem', 
+            background: 'var(--bg-surface)', 
+            padding: '0.25rem 0.55rem', 
+            borderRadius: '8px', 
+            border: '1px solid var(--border-subtle)' 
+          }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }}></span>
+            <span style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: '700' }}>Live Clinical Node</span>
+            
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn btn-outline" 
+              style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', display: 'flex', alignItems: 'center', gap: '0.25rem', marginLeft: '0.2rem' }}
+              onClick={() => {
+                if (window.confirm("Clear all active queue records to start a fresh live session?")) {
+                  playBlip(600, 0.04);
+                  onResetEngine();
+                }
+              }}
+              disabled={isResetting}
+              title="Clear queue records for fresh human testing"
+            >
+              <RefreshCw size={11} className={isResetting ? 'pulse-beacon-yellow' : ''} />
+              <span>Reset</span>
+            </motion.button>
+          </div>
+
+          {/* Crisp Segmented Theme Pill Switcher: Light (Active/Default) & Dark */}
+          <div 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: theme === 'dark' ? 'rgba(15, 23, 42, 0.75)' : '#e2e8f0',
+              border: theme === 'dark' ? '1px solid rgba(56, 189, 248, 0.28)' : '1px solid #cbd5e1',
+              borderRadius: '9999px',
+              padding: '2px',
+              gap: '2px',
+              boxShadow: theme === 'dark' ? 'inset 0 1px 3px rgba(0,0,0,0.5)' : 'inset 0 1px 2px rgba(0,0,0,0.06)'
+            }}
+            title="Arogya Interface Theme Switcher"
+          >
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                if (theme !== 'light') {
+                  playBlip(750, 0.03);
+                  if (onSetTheme) onSetTheme('light');
+                  else if (onToggleTheme) onToggleTheme();
+                }
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                background: theme === 'light' ? '#ffffff' : 'transparent',
+                color: theme === 'light' ? '#2563eb' : 'var(--text-muted)',
+                boxShadow: theme === 'light' ? '0 1px 4px rgba(0, 0, 0, 0.12), 0 0 8px rgba(37, 99, 235, 0.15)' : 'none',
+                border: theme === 'light' ? '1px solid #bfdbfe' : '1px solid transparent',
+                borderRadius: '9999px',
+                padding: '0.22rem 0.6rem',
+                fontSize: '0.72rem',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+              title="Clinical Light Theme (Default)"
+            >
+              <Sun size={12} color={theme === 'light' ? '#d97706' : 'currentColor'} />
+              <span>Light</span>
+            </motion.button>
+
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                if (theme !== 'dark') {
+                  playBlip(750, 0.03);
+                  if (onSetTheme) onSetTheme('dark');
+                  else if (onToggleTheme) onToggleTheme();
+                }
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                background: theme === 'dark' ? '#0f172a' : 'transparent',
+                color: theme === 'dark' ? '#38bdf8' : 'var(--text-muted)',
+                boxShadow: theme === 'dark' ? '0 1px 6px rgba(0, 0, 0, 0.4), 0 0 10px rgba(56, 189, 248, 0.25)' : 'none',
+                border: theme === 'dark' ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid transparent',
+                borderRadius: '9999px',
+                padding: '0.22rem 0.6rem',
+                fontSize: '0.72rem',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)'
+              }}
+              title="Obsidian Dark Theme"
+            >
+              <Moon size={12} color={theme === 'dark' ? '#38bdf8' : 'currentColor'} />
+              <span>Dark</span>
+            </motion.button>
+          </div>
+
+          {/* User state */}
+          {currentUser ? (
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '8px',
+                padding: '0.3rem 0.65rem'
+              }}
+            >
+              <div style={{ fontSize: '0.76rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                 {currentUser.name.split(',')[0]}
               </div>
-              <button
-                onClick={onLogout}
+              <motion.button
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  playBlip(550, 0.03);
+                  onLogout();
+                }}
                 title="Sign Out"
                 style={{
                   background: 'none',
@@ -325,21 +373,25 @@ export default function Navbar({
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: '2px',
-                  marginLeft: '0.2rem'
+                  padding: '2px'
                 }}
               >
-                <LogOut size={14} />
-              </button>
-            </div>
+                <LogOut size={13} />
+              </motion.button>
+            </motion.div>
           ) : (
-            <button
-              onClick={onOpenLogin}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => {
+                playBlip(800, 0.03);
+                onOpenLogin();
+              }}
               className="btn btn-primary"
-              style={{ padding: '0.45rem 1rem', fontSize: '0.82rem' }}
+              style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}
             >
               Sign In
-            </button>
+            </motion.button>
           )}
         </div>
       </div>

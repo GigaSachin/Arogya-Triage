@@ -5,6 +5,8 @@ and Google BigQuery district syndromic surveillance specifications.
 """
 from pathlib import Path
 
+import os
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -13,6 +15,22 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 PDF_DIR = DATA_DIR / "referrals"
 PDF_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = DATA_DIR / "arogya_triage.db"
+
+try:
+    # pyrefly: ignore [missing-import]
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / ".env")
+    load_dotenv(BASE_DIR.parent / ".env")
+except Exception:
+    pass
+
+# Sarvam AI Indic Speech & Language Intelligence Suite Configuration
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "sk_abz9ebmo_tDWEvCUnbGVZfsc0IPHIQYOp")
+SARVAM_STT_URL = "https://api.sarvam.ai/speech-to-text"
+SARVAM_TRANSLATE_URL = "https://api.sarvam.ai/translate"
+SARVAM_TTS_URL = "https://api.sarvam.ai/text-to-speech"
+SARVAM_STT_MODEL = os.getenv("SARVAM_STT_MODEL", "saaras:v3")
+SARVAM_TTS_MODEL = os.getenv("SARVAM_TTS_MODEL", "bulbul:v3")
 
 # Regulatory Non-Diagnostic Disclaimer (Mandatory on all views and outputs)
 REGULATORY_DISCLAIMER = (

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   AlertCircle, CheckCircle2, Clock, FileDown, 
   Share2, ShieldAlert, AlertTriangle, Eye, 
   Stethoscope, Activity, User, Building2, Calendar, 
   ChevronRight, ArrowUpRight, Search, Filter 
 } from 'lucide-react';
+import { playBlip, playSuccessChime } from '../utils/soundEffects';
 
 export default function DoctorReviewDashboard({
   queue,
@@ -138,23 +140,22 @@ export default function DoctorReviewDashboard({
               }
 
               return (
-                <div 
+                <motion.div 
                   key={item.id}
-                  onClick={() => onSelectRecord(item)}
+                  whileHover={{ scale: 1.018, x: 3 }}
+                  whileTap={{ scale: 0.985 }}
+                  onClick={() => {
+                    playBlip(720, 0.02);
+                    onSelectRecord(item);
+                  }}
                   style={{
                     background: bgStyle,
                     border: `1.5px solid ${borderColor}`,
                     borderRadius: '10px',
                     padding: '0.85rem 1rem',
                     cursor: 'pointer',
-                    transition: 'all 0.15s ease',
+                    transition: 'border-color 0.15s ease, background 0.15s ease',
                     boxShadow: isSelected ? (isRed ? 'var(--shadow-glow-red)' : 'var(--shadow-md)') : 'var(--shadow-sm)'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSelected) e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSelected) e.currentTarget.style.borderColor = borderColor;
                   }}
                 >
                   {/* Card Header: ESI Badge & Status */}
@@ -178,7 +179,7 @@ export default function DoctorReviewDashboard({
 
                   {/* Patient Name & Demographics */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.3rem' }}>
-                    <h3 style={{ fontSize: '0.92rem', fontWeight: '700', color: '#ffffff' }}>
+                    <h3 style={{ fontSize: '0.92rem', fontWeight: '700', color: 'var(--text-primary)' }}>
                       {item.display_pseudonym}
                     </h3>
                     <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
@@ -212,7 +213,7 @@ export default function DoctorReviewDashboard({
                       </span>
                     )}
                   </div>
-                </div>
+                </motion.div>
               );
             })
           )}
@@ -221,14 +222,23 @@ export default function DoctorReviewDashboard({
 
       {/* Right Column: Detailed Patient Assessment Card (PRD FR-3.2) */}
       <div>
+        <AnimatePresence mode="wait">
         {selectedRecord ? (
-          <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <motion.div 
+            key={selectedRecord.id}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-card" 
+            style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+          >
             
             {/* Header: Patient Profile & Action Bar */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.25rem' }}>
-                  <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#ffffff' }}>
+                  <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)' }}>
                     {selectedRecord.display_pseudonym}
                   </h2>
                   <span className={`badge ${selectedRecord.urgency_code === 'RED' ? 'badge-red' : (selectedRecord.urgency_code === 'YELLOW' ? 'badge-yellow' : 'badge-green')}`} style={{ fontSize: '0.78rem', padding: '0.25rem 0.65rem' }}>
@@ -245,27 +255,39 @@ export default function DoctorReviewDashboard({
               {/* Single-Action Controls (PRD FR-3.3) */}
               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                 {selectedRecord.status === 'PENDING_REVIEW' && (
-                  <button 
+                  <motion.button 
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
                     className="btn btn-success" 
                     style={{ fontSize: '0.8rem', padding: '0.5rem 0.9rem' }}
-                    onClick={() => onApprove(selectedRecord.id)}
+                    onClick={() => {
+                      playSuccessChime();
+                      onApprove(selectedRecord.id);
+                    }}
                     disabled={isActionLoading}
                   >
                     <CheckCircle2 size={15} />
                     Approve Triage
-                  </button>
+                  </motion.button>
                 )}
 
-                <button 
+                <motion.button 
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   className="btn btn-outline" 
                   style={{ fontSize: '0.8rem', padding: '0.5rem 0.85rem' }}
-                  onClick={() => onOpenOverrideModal(selectedRecord)}
+                  onClick={() => {
+                    playBlip(750, 0.03);
+                    onOpenOverrideModal(selectedRecord);
+                  }}
                 >
                   <AlertCircle size={15} />
                   Override ESI
-                </button>
+                </motion.button>
 
-                <a 
+                <motion.a 
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   href={`/api/queue/${selectedRecord.id}/referral/pdf`}
                   target="_blank"
                   rel="noreferrer"
@@ -274,17 +296,22 @@ export default function DoctorReviewDashboard({
                 >
                   <FileDown size={15} />
                   ABDM Referral PDF
-                </a>
+                </motion.a>
 
-                <button 
+                <motion.button 
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   className="btn btn-outline" 
                   style={{ fontSize: '0.8rem', padding: '0.5rem 0.85rem' }}
-                  onClick={() => onOpenFhirModal(selectedRecord)}
+                  onClick={() => {
+                    playBlip(750, 0.03);
+                    onOpenFhirModal(selectedRecord);
+                  }}
                   title="View interoperable HL7/FHIR Composition bundle"
                 >
                   <Share2 size={15} />
                   FHIR JSON
-                </button>
+                </motion.button>
               </div>
             </div>
 
@@ -313,48 +340,69 @@ export default function DoctorReviewDashboard({
               <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 1. Physiological Vitals Matrix
               </h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.65rem' }}>
-                <div style={{ background: '#0c1220', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>SpO2</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals.spo2) < 90 ? '#ef4444' : '#ffffff', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.75rem' }}>
+                <div style={{ 
+                  background: 'var(--bg-surface-elevated)', 
+                  padding: '0.75rem 0.5rem', 
+                  borderRadius: '10px', 
+                  border: Number(selectedRecord.vitals.spo2) < 90 ? '1px solid var(--color-red)' : '1px solid var(--border-subtle)', 
+                  textAlign: 'center',
+                  boxShadow: Number(selectedRecord.vitals.spo2) < 90 ? '0 0 15px var(--color-red-glow)' : 'none'
+                }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>SpO2</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: '800', color: Number(selectedRecord.vitals.spo2) < 90 ? 'var(--color-red)' : 'var(--text-highlight)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals.spo2 || 'N/A'}%
                   </div>
-                  <div style={{ fontSize: '0.62rem', color: Number(selectedRecord.vitals.spo2) < 90 ? '#fca5a5' : 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.62rem', color: Number(selectedRecord.vitals.spo2) < 90 ? 'var(--color-red)' : 'var(--text-muted)', fontWeight: Number(selectedRecord.vitals.spo2) < 90 ? '700' : 'normal' }}>
                     {Number(selectedRecord.vitals.spo2) < 90 ? 'CRITICAL LOW' : 'Normal >= 94%'}
                   </div>
                 </div>
 
-                <div style={{ background: '#0c1220', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Pulse Rate</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals.pulse) >= 120 ? '#ef4444' : '#ffffff', fontFamily: 'var(--font-mono)' }}>
-                    {selectedRecord.vitals.pulse || 'N/A'} <span style={{ fontSize: '0.75rem' }}>bpm</span>
+                <div style={{ 
+                  background: 'var(--bg-surface-elevated)', 
+                  padding: '0.75rem 0.5rem', 
+                  borderRadius: '10px', 
+                  border: Number(selectedRecord.vitals.pulse) >= 120 ? '1px solid var(--color-red)' : '1px solid var(--border-subtle)', 
+                  textAlign: 'center',
+                  boxShadow: Number(selectedRecord.vitals.pulse) >= 120 ? '0 0 15px var(--color-red-glow)' : 'none'
+                }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Pulse Rate</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: '800', color: Number(selectedRecord.vitals.pulse) >= 120 ? 'var(--color-red)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                    {selectedRecord.vitals.pulse || 'N/A'} <span style={{ fontSize: '0.75rem', fontWeight: '500' }}>bpm</span>
                   </div>
-                  <div style={{ fontSize: '0.62rem', color: Number(selectedRecord.vitals.pulse) >= 120 ? '#fca5a5' : 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.62rem', color: Number(selectedRecord.vitals.pulse) >= 120 ? 'var(--color-red)' : 'var(--text-muted)', fontWeight: Number(selectedRecord.vitals.pulse) >= 120 ? '700' : 'normal' }}>
                     {Number(selectedRecord.vitals.pulse) >= 120 ? 'TACHYCARDIA' : '60 - 100 bpm'}
                   </div>
                 </div>
 
-                <div style={{ background: '#0c1220', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Blood Pressure</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem 0.5rem', borderRadius: '10px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Blood Pressure</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals.systolic_bp || '-'}/{selectedRecord.vitals.diastolic_bp || '-'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>mmHg</div>
                 </div>
 
-                <div style={{ background: '#0c1220', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Temperature</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals.temperature) >= 101.5 ? '#f59e0b' : '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ 
+                  background: 'var(--bg-surface-elevated)', 
+                  padding: '0.75rem 0.5rem', 
+                  borderRadius: '10px', 
+                  border: Number(selectedRecord.vitals.temperature) >= 101.5 ? '1px solid var(--color-yellow)' : '1px solid var(--border-subtle)', 
+                  textAlign: 'center',
+                  boxShadow: Number(selectedRecord.vitals.temperature) >= 101.5 ? '0 0 15px var(--color-yellow-glow)' : 'none'
+                }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Temperature</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: '800', color: Number(selectedRecord.vitals.temperature) >= 101.5 ? 'var(--color-yellow)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals.temperature || 'N/A'}°F
                   </div>
-                  <div style={{ fontSize: '0.62rem', color: Number(selectedRecord.vitals.temperature) >= 101.5 ? '#fde68a' : 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.62rem', color: Number(selectedRecord.vitals.temperature) >= 101.5 ? 'var(--color-yellow)' : 'var(--text-muted)', fontWeight: Number(selectedRecord.vitals.temperature) >= 101.5 ? '700' : 'normal' }}>
                     {Number(selectedRecord.vitals.temperature) >= 101.5 ? 'HIGH FEBRILE' : 'Normal 98.6°F'}
                   </div>
                 </div>
 
-                <div style={{ background: '#0c1220', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Resp Rate</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.75rem 0.5rem', borderRadius: '10px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Resp Rate</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals.respiration_rate || 'N/A'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>/min</div>
@@ -367,27 +415,28 @@ export default function DoctorReviewDashboard({
               <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 2. Chronological Clinical Progression
               </h4>
-              <div style={{ background: '#0c1220', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
                 {selectedRecord.timeline && selectedRecord.timeline.length > 0 ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
                     {selectedRecord.timeline.map((step, idx) => (
                       <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                         <span style={{
-                          background: '#1e3a8a',
-                          color: '#93c5fd',
+                          background: 'var(--color-blue-bg)',
+                          color: 'var(--text-highlight)',
+                          border: '1px solid var(--color-blue-border)',
                           borderRadius: '50%',
-                          width: '20px',
-                          height: '20px',
+                          width: '22px',
+                          height: '22px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: '0.7rem',
-                          fontWeight: '700',
+                          fontWeight: '800',
                           flexShrink: 0
                         }}>
                           {idx + 1}
                         </span>
-                        <span style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>{step}</span>
+                        <span style={{ fontSize: '0.84rem', color: 'var(--text-primary)' }}>{step}</span>
                       </div>
                     ))}
                   </div>
@@ -414,12 +463,12 @@ export default function DoctorReviewDashboard({
                 )}
               </div>
 
-              <div style={{ background: '#0c1220', borderRadius: '8px', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
+              <div style={{ background: 'var(--bg-card)', borderRadius: '10px', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
                   <thead>
-                    <tr style={{ background: '#111a2e', color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
-                      <th style={{ padding: '0.55rem 0.85rem' }}>Parameter</th>
-                      <th style={{ padding: '0.55rem 0.85rem' }}>Observed Result</th>
+                    <tr style={{ background: 'var(--table-header-bg)', color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
+                      <th style={{ padding: '0.6rem 0.85rem' }}>Parameter</th>
+                      <th style={{ padding: '0.6rem 0.85rem' }}>Observed Result</th>
                       <th style={{ padding: '0.55rem 0.85rem' }}>ICMR Reference Range</th>
                       <th style={{ padding: '0.55rem 0.85rem' }}>Clinical Evaluation</th>
                     </tr>
@@ -429,11 +478,11 @@ export default function DoctorReviewDashboard({
                       selectedRecord.lab_analysis.all_evaluated.map((item, idx) => {
                         const isCrit = item.status && item.status.includes('CRITICAL');
                         return (
-                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                            <td style={{ padding: '0.55rem 0.85rem', fontWeight: '600', color: '#ffffff' }}>
+                          <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                            <td style={{ padding: '0.55rem 0.85rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                               {item.parameter}
                             </td>
-                            <td style={{ padding: '0.55rem 0.85rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isCrit ? '#ef4444' : '#ffffff' }}>
+                            <td style={{ padding: '0.55rem 0.85rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: isCrit ? '#dc2626' : 'var(--text-primary)' }}>
                               {item.value} {item.unit}
                             </td>
                             <td style={{ padding: '0.55rem 0.85rem', color: 'var(--text-muted)' }}>
@@ -472,25 +521,26 @@ export default function DoctorReviewDashboard({
                 4. Automated Follow-Up Inquiries for Attending Doctor
               </h4>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
                 {selectedRecord.missing_info && selectedRecord.missing_info.length > 0 ? (
                   selectedRecord.missing_info.map((info, idx) => (
                     <div key={idx} style={{
-                      background: info.importance === 'HIGH' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                      border: info.importance === 'HIGH' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(59, 130, 246, 0.3)',
-                      borderRadius: '8px',
-                      padding: '0.65rem 0.85rem'
+                      background: info.importance === 'HIGH' ? 'rgba(255, 42, 95, 0.12)' : 'rgba(56, 189, 248, 0.1)',
+                      border: info.importance === 'HIGH' ? '1px solid rgba(255, 42, 95, 0.45)' : '1px solid rgba(56, 189, 248, 0.35)',
+                      borderRadius: '10px',
+                      padding: '0.75rem 1rem',
+                      boxShadow: info.importance === 'HIGH' ? '0 0 15px rgba(255, 42, 95, 0.15)' : 'none'
                     }}>
-                      <div style={{ fontSize: '0.8rem', fontWeight: '700', color: info.importance === 'HIGH' ? '#fca5a5' : '#93c5fd', marginBottom: '0.2rem' }}>
+                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: info.importance === 'HIGH' ? '#ff6b8b' : '#38bdf8', marginBottom: '0.25rem' }}>
                         [{info.title}]
                       </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                         {info.prompt}
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div style={{ background: '#0c1220', padding: '0.75rem', borderRadius: '8px', fontSize: '0.78rem', color: '#86efac' }}>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.12)', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.8rem', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.35)' }}>
                     All standard vitals and baseline clinical parameters recorded. No blind spots flagged.
                   </div>
                 )}
@@ -499,11 +549,11 @@ export default function DoctorReviewDashboard({
 
             {/* Overridden History Notification if Applicable */}
             {selectedRecord.status === 'OVERRIDDEN' && (
-              <div style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid #f59e0b', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-                <div style={{ fontSize: '0.82rem', fontWeight: '700', color: '#fde68a', marginBottom: '0.25rem' }}>
+              <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px', padding: '0.75rem 1rem' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: '700', color: '#b45309', marginBottom: '0.25rem' }}>
                   Clinical Override Recorded: Previous ESI Level {selectedRecord.previous_esi_level} → New ESI Level {selectedRecord.esi_level}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#ffffff' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)' }}>
                   <strong>Physician Rationale:</strong> {selectedRecord.override_reason}
                 </div>
                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
@@ -512,7 +562,7 @@ export default function DoctorReviewDashboard({
               </div>
             )}
 
-          </div>
+          </motion.div>
         ) : (
           <div className="glass-card" style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-muted)' }}>
             <Stethoscope size={48} color="#334155" style={{ margin: '0 auto 1rem' }} />
@@ -524,6 +574,7 @@ export default function DoctorReviewDashboard({
             </p>
           </div>
         )}
+        </AnimatePresence>
       </div>
 
     </div>

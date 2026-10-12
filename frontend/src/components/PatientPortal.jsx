@@ -85,26 +85,27 @@ export default function PatientPortal({
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '1.25rem',
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(11, 18, 33, 0.9))'
+        background: '#ffffff',
+        border: '1px solid var(--border-subtle)',
+        boxShadow: 'var(--shadow-card)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           <div style={{
             width: '56px',
             height: '56px',
             borderRadius: '16px',
-            background: 'linear-gradient(135deg, #059669, #10b981)',
+            background: '#2563eb',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 25px rgba(16, 185, 129, 0.4)',
-            border: '2px solid rgba(255, 255, 255, 0.2)'
+            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)'
           }}>
             <User size={28} color="#ffffff" />
           </div>
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.02em' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                 {patientUser?.name || activeRecord?.display_pseudonym || 'Sanjib Munda'}
               </h2>
               <span className="badge badge-green" style={{ fontSize: '0.68rem', padding: '0.2rem 0.6rem' }}>
@@ -128,12 +129,12 @@ export default function PatientPortal({
           borderRadius: '14px',
           padding: '0.75rem 1.5rem',
           textAlign: 'right',
-          boxShadow: `0 0 20px ${status.glow}`
+          boxShadow: 'var(--shadow-sm)'
         }}>
           <div style={{ fontSize: '0.7rem', color: status.color, fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Live Triage Token
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: '900', color: '#ffffff', fontFamily: 'var(--font-mono)', lineHeight: '1.2' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', lineHeight: '1.2' }}>
             #{activeRecord?.id?.replace('TC-', 'T-') || 'TRG-8812'}
           </div>
           <div style={{ fontSize: '0.72rem', color: status.color, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.35rem', marginTop: '0.2rem' }}>

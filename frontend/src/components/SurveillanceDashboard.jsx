@@ -254,7 +254,7 @@ export default function SurveillanceDashboard() {
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
             <thead>
-              <tr style={{ background: '#0a0f1d', color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
+              <tr style={{ background: 'var(--table-header-bg)', color: 'var(--text-muted)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
                 <th style={{ padding: '0.5rem 0.75rem' }}>Event ID</th>
                 <th style={{ padding: '0.5rem 0.75rem' }}>Facility ID</th>
                 <th style={{ padding: '0.5rem 0.75rem' }}>District</th>
@@ -267,17 +267,17 @@ export default function SurveillanceDashboard() {
             <tbody>
               {telemetryData?.recent_stream_log && telemetryData.recent_stream_log.length > 0 ? (
                 telemetryData.recent_stream_log.map((row, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
-                    <td style={{ padding: '0.5rem 0.75rem', color: '#93c5fd' }}>{row.event_id.slice(0, 12)}...</td>
+                  <tr key={idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-highlight)' }}>{row.event_id.slice(0, 12)}...</td>
                     <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-secondary)' }}>{row.facility_id}</td>
-                    <td style={{ padding: '0.5rem 0.75rem', color: '#ffffff' }}>{row.district}</td>
+                    <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-primary)', fontWeight: '600' }}>{row.district}</td>
                     <td style={{ padding: '0.5rem 0.75rem' }}>
                       <span className={`badge ${row.color_tag === 'RED' ? 'badge-red' : (row.color_tag === 'YELLOW' ? 'badge-yellow' : 'badge-green')}`} style={{ fontSize: '0.65rem' }}>
                         ESI {row.esi_level}
                       </span>
                     </td>
-                    <td style={{ padding: '0.5rem 0.75rem', color: '#fde68a' }}>{row.symptom_cluster}</td>
-                    <td style={{ padding: '0.5rem 0.75rem', color: '#86efac' }}>{row.streaming_status}</td>
+                    <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-primary)' }}>{row.symptom_cluster}</td>
+                    <td style={{ padding: '0.5rem 0.75rem', color: 'var(--color-green)', fontWeight: '600' }}>{row.streaming_status}</td>
                     <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-muted)' }}>{row.latency_ms} ms</td>
                   </tr>
                 ))
