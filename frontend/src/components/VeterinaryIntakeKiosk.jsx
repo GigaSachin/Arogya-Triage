@@ -5,12 +5,15 @@ import {
   Clock, Stethoscope, Sparkles, HelpCircle, HeartPulse, ChevronRight,
   Mic, MicOff
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function VeterinaryIntakeKiosk({ 
   onIntakeSuccess, 
   scenarioData, 
   onClearScenario 
 }) {
+  const { t } = useLanguage();
+
   // Facility & Basic Animal Demographics
   const [facilityId, setFacilityId] = useState('FAC-ROU-01');
   const [species, setSpecies] = useState('cattle');
@@ -388,10 +391,10 @@ export default function VeterinaryIntakeKiosk({
               </div>
               <div>
                 <h2 style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--text-primary)' }}>
-                  Veterinary Emergency & Livestock Triage Node
+                  {t('vet_kiosk.title', 'Veterinary Emergency & Livestock Triage Node')}
                 </h2>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  DAH&VS / ICAR Clinical Standards • Companion Animals & Bovine Herd Triage
+                  {t('vet_kiosk.subtitle', 'Standardized Veterinary Triage Index (VTI) for Livestock & Companion Animals')}
                 </div>
               </div>
             </div>
@@ -432,31 +435,31 @@ export default function VeterinaryIntakeKiosk({
           {/* Card 1: Facility & Animal Demographics */}
           <div className="glass-card" style={{ padding: '1.25rem' }}>
             <h3 style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              1. Species & Animal Identification
+              {t('vet_kiosk.species_title', '1. Species & Animal Identification')}
             </h3>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
               <div>
                 <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                  Target Species *
+                  {t('vet_kiosk.species_label', 'Target Species *')}
                 </label>
                 <select
                   className="form-select"
                   value={species}
                   onChange={(e) => setSpecies(e.target.value)}
                 >
-                  <option value="cattle">Bovine / Cattle (Bos indicus / taurus) [Supported]</option>
-                  <option value="dog">Canine / Dog (Canis lupus familiaris) [Supported]</option>
-                  <option value="goat">Caprine / Goat (Capra hircus) [Beta Testing]</option>
+                  <option value="cattle">{t('vet_kiosk.bovine', 'Bovine / Cattle (Bos indicus / taurus)')} [Supported]</option>
+                  <option value="dog">{t('vet_kiosk.canine', 'Canine / Dog (Canis lupus familiaris)')} [Supported]</option>
+                  <option value="goat">{t('vet_kiosk.caprine', 'Caprine / Goat (Capra hircus)')} [Beta Testing]</option>
                   <option value="buffalo">Bubaline / Buffalo (Bubalus bubalis) [Beta Testing]</option>
-                  <option value="cat">Feline / Cat (Felis catus) [Beta Testing]</option>
+                  <option value="cat">{t('vet_kiosk.feline', 'Feline / Cat (Felis catus)')} [Beta Testing]</option>
                   <option value="iguana">Exotic / Other [Unsupported - Auto-Flags Uncertainty]</option>
                 </select>
               </div>
 
               <div>
                 <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                  Ear Tag / Animal Pseudonym / Pet Name
+                  {t('vet_kiosk.animal_id', 'Tag / Collar ID')}
                 </label>
                 <input
                   type="text"
@@ -498,7 +501,7 @@ export default function VeterinaryIntakeKiosk({
 
               <div>
                 <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.35rem' }}>
-                  Owner / Farmer Mobile (Masked In-Flight)
+                  {t('vet_kiosk.owner_name', 'Owner / Farmer Phone')}
                 </label>
                 <input
                   type="text"
@@ -557,7 +560,7 @@ export default function VeterinaryIntakeKiosk({
           {/* Card 2: Symptoms, Clinical Narrative & History */}
           <div className="glass-card" style={{ padding: '1.25rem' }}>
             <h3 style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              2. Presenting Complaints & Timeline
+              {t('vet_kiosk.clinical_signs_title', '2. Presenting Complaints & Timeline')}
             </h3>
 
             <div style={{ marginBottom: '1rem' }}>
@@ -672,13 +675,13 @@ export default function VeterinaryIntakeKiosk({
           {/* Card 3: Physiological Vitals Matrix */}
           <div className="glass-card" style={{ padding: '1.25rem' }}>
             <h3 style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              3. Objective Physiological Vitals (Field Examination)
+              {t('vet_kiosk.vitals_title', '3. Objective Physiological Vitals (Field Examination)')}
             </h3>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem', marginBottom: '0.75rem' }}>
               <div>
                 <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.25rem' }}>
-                  Rectal Temp (°F)
+                  {t('vet_kiosk.rectal_temp', 'Rectal Temp (°F)')}
                 </label>
                 <input
                   type="number"
@@ -692,7 +695,7 @@ export default function VeterinaryIntakeKiosk({
 
               <div>
                 <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.25rem' }}>
-                  Heart Rate (bpm)
+                  {t('vet_kiosk.heart_rate', 'Heart Rate (bpm)')}
                 </label>
                 <input
                   type="number"
@@ -706,7 +709,7 @@ export default function VeterinaryIntakeKiosk({
 
               <div>
                 <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.25rem' }}>
-                  Respiration (bpm)
+                  {t('vet_kiosk.resp_rate', 'Respiration (bpm)')}
                 </label>
                 <input
                   type="number"
@@ -720,7 +723,7 @@ export default function VeterinaryIntakeKiosk({
 
               <div>
                 <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.25rem' }}>
-                  Capillary Refill (s)
+                  {t('vet_kiosk.crt_label', 'Capillary Refill (s)')}
                 </label>
                 <input
                   type="number"
@@ -734,7 +737,7 @@ export default function VeterinaryIntakeKiosk({
 
               <div>
                 <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.25rem' }}>
-                  Mucous Membrane
+                  {t('vet_kiosk.mm_label', 'Mucous Membrane')}
                 </label>
                 <select
                   className="form-select"
@@ -752,7 +755,7 @@ export default function VeterinaryIntakeKiosk({
 
               <div>
                 <label style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.25rem' }}>
-                  Hydration Status
+                  {t('vet_kiosk.hydration_label', 'Hydration Status')}
                 </label>
                 <select
                   className="form-select"
@@ -806,12 +809,12 @@ export default function VeterinaryIntakeKiosk({
               {isSubmitting ? (
                 <>
                   <RefreshCw size={16} className="pulse-beacon-yellow" />
-                  Running Deterministic Veterinary Safety Rules...
+                  {t('vet_kiosk.submitting_vet', 'Running Veterinary Decision Matrix...')}
                 </>
               ) : (
                 <>
                   <HeartPulse size={16} />
-                  Evaluate Veterinary Triage
+                  {t('vet_kiosk.submit_vet_btn', 'Compute VTI & Submit to Vet Queue')}
                 </>
               )}
             </button>

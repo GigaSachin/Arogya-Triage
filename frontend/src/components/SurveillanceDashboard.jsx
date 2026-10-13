@@ -4,8 +4,10 @@ import {
   MapPin, RefreshCw, BarChart3, Radio, ArrowUpRight, 
   CheckCircle2, Clock 
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SurveillanceDashboard() {
+  const { t } = useLanguage();
   const [telemetryData, setTelemetryData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeDistrict, setActiveDistrict] = useState('Sundargarh (Rourkela)');
@@ -55,7 +57,7 @@ export default function SurveillanceDashboard() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem' }}>
               <Database size={22} color="var(--text-highlight)" />
               <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-primary)' }}>
-                District Syndromic Telemetry & BigQuery Live Stream
+                {t('surveillance.title', 'District Syndromic Telemetry & BigQuery Live Stream')}
               </h2>
               <span className="badge badge-blue" style={{ fontSize: '0.7rem' }}>
                 gRPC / HTTP/2 Active
@@ -68,7 +70,9 @@ export default function SurveillanceDashboard() {
 
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Ingested Events</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                {t('surveillance.total_events', 'Total Ingested Events')}
+              </div>
               <div style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                 {telemetryData?.total_ingested_events?.toLocaleString()}
               </div>
@@ -99,7 +103,9 @@ export default function SurveillanceDashboard() {
         <div className="glass-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <MapPin size={18} color="#f59e0b" />
-            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)' }}>Odisha Surveillance Jurisdictions</h3>
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+              {t('surveillance.jurisdictions', 'Odisha Surveillance Jurisdictions')}
+            </h3>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

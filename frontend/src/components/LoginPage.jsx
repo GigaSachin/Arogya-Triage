@@ -4,8 +4,10 @@ import {
   Lock, HeartPulse, Check, ShieldCheck, Sparkles, 
   Zap, Award, FileText, QrCode, Building2
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LoginPage({ onLogin }) {
+  const { t } = useLanguage();
   const [selectedRole, setSelectedRole] = useState('doctor');
 
   // Input states
@@ -279,10 +281,10 @@ export default function LoginPage({ onLogin }) {
           {/* Header inside Form */}
           <div style={{ marginBottom: '1.75rem' }}>
             <h2 style={{ fontSize: '1.45rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-              Authenticate Role
+              {t('login.select_role', 'Authenticate Role')}
             </h2>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              Choose your persona to access specialized clinical workflows
+              {t('login.subtitle', 'Choose your persona to access specialized clinical workflows')}
             </p>
           </div>
 
@@ -317,7 +319,7 @@ export default function LoginPage({ onLogin }) {
               }}
             >
               <Stethoscope size={18} color={selectedRole === 'doctor' ? 'var(--color-blue)' : 'currentColor'} />
-              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Doctor</span>
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>{t('nav.doctor_queue', 'Doctor')}</span>
             </button>
 
             {/* ANM Tab */}
@@ -363,7 +365,7 @@ export default function LoginPage({ onLogin }) {
               }}
             >
               <HeartPulse size={18} color={selectedRole === 'vet_officer' ? 'var(--color-green)' : 'currentColor'} />
-              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Vet Officer</span>
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>{t('nav.vet_queue', 'Vet Officer')}</span>
             </button>
 
             {/* Paravet Tab */}
@@ -409,7 +411,7 @@ export default function LoginPage({ onLogin }) {
               }}
             >
               <User size={18} color={selectedRole === 'patient' ? 'var(--text-highlight)' : 'currentColor'} />
-              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Patient</span>
+              <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>{t('nav.patient_portal', 'Patient')}</span>
             </button>
           </div>
 
@@ -492,7 +494,7 @@ export default function LoginPage({ onLogin }) {
                 borderTop: '1px solid rgba(255, 255, 255, 0.2)'
               }}
             >
-              <span>Access {activePersona.role === 'doctor' ? 'Clinical Triage Queue' : activePersona.role === 'anm_gnm' ? 'Intake Kiosk' : 'Patient Health Portal'}</span>
+              <span>{t('login.btn_login', 'Enter Clinical Workspace')}</span>
               <ArrowRight size={16} />
             </button>
           </form>
@@ -505,7 +507,7 @@ export default function LoginPage({ onLogin }) {
             textAlign: 'center'
           }}>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>
-              ⚡ 1-Click Instant Evaluation Personas:
+              ⚡ {t('login.quick_demo', '1-Click Instant Evaluation Personas:')}
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
               <button

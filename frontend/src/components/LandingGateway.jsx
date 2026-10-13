@@ -8,6 +8,7 @@ import {
 import TiltCard from './TiltCard';
 import Triage3DCore from './Triage3DCore';
 import { playBlip, playScenarioChime } from '../utils/soundEffects';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LandingGateway({
   onSelectPathway,
@@ -19,6 +20,7 @@ export default function LandingGateway({
   humanCount,
   vetCount
 }) {
+  const { t, language } = useLanguage();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -199,7 +201,7 @@ export default function LandingGateway({
             boxShadow: '0 0 12px var(--color-blue-glow)'
           }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--color-blue)', boxShadow: '0 0 8px var(--color-blue)' }}></span>
-            <span>Deterministic Clinical Decision Support • Bharat V2.5</span>
+            <span>{t('gateway.hero_badge', 'Deterministic Clinical Decision Support • Bharat V2.5')}</span>
           </div>
 
           <h1 style={{
@@ -213,7 +215,7 @@ export default function LandingGateway({
             textShadow: 'var(--title-shadow)',
             marginBottom: '1rem'
           }}>
-            AROGYA-TRIAGE
+            {t('gateway.hero_title', 'AROGYA-TRIAGE')}
           </h1>
 
           <p style={{
@@ -223,7 +225,7 @@ export default function LandingGateway({
             marginBottom: '1.75rem',
             maxWidth: '560px'
           }}>
-            Multimodal, non-diagnostic clinical & veterinary emergency triage engineered for frontline health workers, medical officers, and field paravets across India. Transforming messy Indic speech and degraded paper lab slips into prioritized queues in under 15 seconds.
+            {t('gateway.hero_subtitle', 'Multimodal, non-diagnostic clinical & veterinary emergency triage engineered for frontline health workers, medical officers, and field paravets across India. Transforming messy Indic speech and degraded paper lab slips into prioritized queues in under 15 seconds.')}
           </p>
 
           {/* Clean HUD Telemetry Bar */}
@@ -240,7 +242,7 @@ export default function LandingGateway({
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-blue)', boxShadow: '0 0 6px var(--color-blue)' }}></span>
-              <span style={{ color: 'var(--text-muted)' }}>Human Active:</span>
+              <span style={{ color: 'var(--text-muted)' }}>{t('gateway.telemetry_human', 'Human Active')}:</span>
               <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{humanCount ?? 3}</strong>
             </div>
 
@@ -248,7 +250,7 @@ export default function LandingGateway({
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-green)', boxShadow: '0 0 6px var(--color-green)' }}></span>
-              <span style={{ color: 'var(--text-muted)' }}>Veterinary Cases:</span>
+              <span style={{ color: 'var(--text-muted)' }}>{t('gateway.telemetry_vet', 'Veterinary Cases')}:</span>
               <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{vetCount ?? 4}</strong>
             </div>
 
@@ -257,7 +259,7 @@ export default function LandingGateway({
                 <div style={{ width: '1px', height: '14px', background: 'var(--border-subtle)' }}></div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: 'var(--color-red)' }}>
                   <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-red)' }}></span>
-                  <strong style={{ fontFamily: 'var(--font-mono)' }}>{criticalRedCount} Emergent</strong>
+                  <strong style={{ fontFamily: 'var(--font-mono)' }}>{criticalRedCount} {t('gateway.telemetry_emergent', 'Emergent')}</strong>
                 </div>
               </>
             )}
@@ -662,20 +664,19 @@ export default function LandingGateway({
             </div>
 
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Human Healthcare Pathway
+              {t('gateway.human_gateway_title', 'Human Healthcare Pathway')}
             </h2>
 
             <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: '1.65', marginBottom: '1.5rem' }}>
-              Clinical emergency decision support for public hospital OPDs and triage nodes across India (Rourkela CHC, SCB Medical College, PHCs).
+              {t('gateway.human_gateway_desc', 'Clinical emergency decision support for public hospital OPDs and triage nodes across India (Rourkela CHC, SCB Medical College, PHCs).')}
             </p>
 
             {/* Core Features */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1.75rem' }}>
               {[
-                'Deterministic ESI Levels 1–5 Rule Engine (Zero LLM Hallucination)',
-                'Indic Voice-to-Text Pipeline (Odia, Hindi, English via Sarvam AI)',
-                'Degraded Hospital Lab Slip Tabular OCR Extraction',
-                'In-Flight PII Masking (Aadhaar & Mobile) & 1-Click ABDM PDF'
+                t('gateway.human_feature_1', 'Deterministic ESI Levels 1–5 Rule Engine (Zero LLM Hallucination)'),
+                t('gateway.human_feature_2', 'Indic Voice-to-Text Pipeline (Odia, Hindi, English via Sarvam AI)'),
+                t('gateway.human_feature_3', 'Degraded Hospital Lab Slip Tabular OCR Extraction & 1-Click ABDM PDF')
               ].map((feat, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
                   <CheckCircle2 size={15} color="var(--text-highlight)" style={{ flexShrink: 0 }} />
@@ -712,7 +713,7 @@ export default function LandingGateway({
               style={{ padding: '0.65rem 1rem', fontSize: '0.82rem' }}
             >
               <Stethoscope size={16} />
-              Doctor Queue
+              {t('nav.doctor_queue', 'Doctor Queue')}
             </motion.button>
 
             <motion.button
@@ -723,7 +724,7 @@ export default function LandingGateway({
               style={{ padding: '0.65rem 1rem', fontSize: '0.82rem' }}
             >
               <Activity size={16} />
-              Patient Intake
+              {t('nav.patient_intake', 'Patient Intake')}
             </motion.button>
           </div>
         </TiltCard>
@@ -768,20 +769,19 @@ export default function LandingGateway({
             </div>
 
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Veterinary Care Pathway
+              {t('gateway.vet_gateway_title', 'Veterinary Care Pathway')}
             </h2>
 
             <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: '1.65', marginBottom: '1.5rem' }}>
-              Rural companion animal and livestock emergency triage for field paravets, veterinary polyclinics, and livestock inspectors across Odisha.
+              {t('gateway.vet_gateway_desc', 'Rural companion animal and livestock emergency triage for field paravets, veterinary polyclinics, and livestock inspectors across Odisha.')}
             </p>
 
             {/* Core Features */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1.75rem' }}>
               {[
-                'Veterinary Triage Index (Critical, Emergent, Urgent, Routine)',
-                'Species Physiological Bounds for Cattle Bloat & Canine Parvo',
-                'Transparent Non-Guessing Uncertainty for Rare/Beta Species',
-                'DAH&VS Clinical Transfer Referral Note (Printable PDF)'
+                t('gateway.vet_feature_1', 'Veterinary Triage Index (Critical, Emergent, Urgent, Routine)'),
+                t('gateway.vet_feature_2', 'Species Physiological Bounds for Cattle Bloat & Canine Parvo'),
+                t('gateway.vet_feature_3', 'Paravet field-stabilization automated clinical directives')
               ].map((feat, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
                   <CheckCircle2 size={15} color="var(--color-green)" style={{ flexShrink: 0 }} />
@@ -818,7 +818,7 @@ export default function LandingGateway({
               style={{ padding: '0.65rem 1rem', fontSize: '0.82rem' }}
             >
               <HeartPulse size={16} />
-              Vet Queue
+              {t('nav.vet_queue', 'Vet Queue')}
             </motion.button>
 
             <motion.button
@@ -829,7 +829,7 @@ export default function LandingGateway({
               style={{ padding: '0.65rem 1rem', fontSize: '0.82rem' }}
             >
               <Activity size={16} />
-              Vet Intake
+              {t('nav.vet_intake', 'Vet Intake')}
             </motion.button>
           </div>
         </TiltCard>
@@ -865,10 +865,10 @@ export default function LandingGateway({
           </div>
           <div>
             <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)' }}>
-              1-Click Benchmark Test Vector Switcher
+              {t('gateway.benchmark_title', '1-Click Benchmark Test Vector Switcher')}
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-              Instant pre-calibrated scenario injection for Grand Finale judges
+              {t('gateway.benchmark_subtitle', 'Instant pre-calibrated scenario injection for Grand Finale judges')}
             </div>
           </div>
         </div>

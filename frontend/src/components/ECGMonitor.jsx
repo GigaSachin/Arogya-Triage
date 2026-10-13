@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Activity, Volume2, VolumeX, ShieldCheck, Wifi } from 'lucide-react';
 import { toggleSound, getSoundStatus, playBlip } from '../utils/soundEffects';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function ECGMonitor({ criticalRedCount = 0 }) {
+  const { t } = useLanguage();
   const isRed = criticalRedCount > 0;
   const canvasRef = useRef(null);
   const [isMuted, setIsMuted] = useState(!getSoundStatus());
@@ -191,7 +193,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
         flexWrap: 'wrap'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>HR:</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>{t('ecg.hr_label', 'HR')}:</span>
           <strong style={{ 
             color: criticalRedCount > 0 ? 'var(--color-red)' : 'var(--text-primary)', 
             fontFamily: 'var(--font-mono)',
@@ -204,7 +206,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
         <div style={{ width: '1px', height: '14px', background: 'var(--border-subtle)' }} />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>SpO2:</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>{t('ecg.spo2_label', 'SpO2')}:</span>
           <strong style={{ 
             color: vitals.spo2 < 92 ? 'var(--color-red)' : 'var(--color-green)', 
             fontFamily: 'var(--font-mono)',
@@ -217,7 +219,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
         <div style={{ width: '1px', height: '14px', background: 'var(--border-subtle)' }} />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>BP:</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>{t('ecg.bp_label', 'BP')}:</span>
           <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}>
             {vitals.bp}
           </strong>
@@ -226,7 +228,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
         <div style={{ width: '1px', height: '14px', background: 'var(--border-subtle)' }} />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>Resp:</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>{t('ecg.resp_label', 'RESP')}:</span>
           <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}>
             {vitals.rr}/m
           </strong>
@@ -253,7 +255,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
 
         <button
           onClick={handleAudioToggle}
-          title={isMuted ? "Enable subtle clinical sound effects" : "Mute clinical sound effects"}
+          title={isMuted ? t('ecg.audio_unmute', "Enable Audio Beeper") : t('ecg.audio_mute', "Mute Beeper")}
           style={{
             background: isMuted ? 'var(--bg-surface-elevated)' : 'var(--color-blue-bg)',
             border: isMuted ? '1px solid var(--border-subtle)' : '1px solid var(--color-blue-border)',

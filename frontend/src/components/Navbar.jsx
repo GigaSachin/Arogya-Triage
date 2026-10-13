@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Activity, Stethoscope, User, LogOut, HeartPulse, RefreshCw, Layers, ShieldCheck, Zap, Sun, Moon
+  Activity, Stethoscope, User, LogOut, HeartPulse, RefreshCw, Layers, ShieldCheck, Zap, Sun, Moon, Globe
 } from 'lucide-react';
 import { playBlip, playScenarioChime } from '../utils/soundEffects';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ 
   currentTab, 
@@ -20,13 +21,15 @@ export default function Navbar({
   onToggleTheme,
   onSetTheme
 }) {
+  const { language, setLanguage, t, availableLanguages } = useLanguage();
+
   const navItems = [
-    { id: 'gateway', label: 'Command Hub', icon: Layers },
-    { id: 'doctor', label: 'Doctor Queue', icon: Stethoscope, badge: activeQueueCount, isRed: criticalRedCount > 0 },
-    { id: 'kiosk', label: 'Patient Intake', icon: Activity },
-    { id: 'vet_dashboard', label: 'Vet Queue', icon: HeartPulse },
-    { id: 'vet_kiosk', label: 'Vet Intake', icon: Activity },
-    { id: 'patient', label: 'Patient Portal', icon: User },
+    { id: 'gateway', label: t('nav.command_hub', 'Command Hub'), icon: Layers },
+    { id: 'doctor', label: t('nav.doctor_queue', 'Doctor Queue'), icon: Stethoscope, badge: activeQueueCount, isRed: criticalRedCount > 0 },
+    { id: 'kiosk', label: t('nav.patient_intake', 'Patient Intake'), icon: Activity },
+    { id: 'vet_dashboard', label: t('nav.vet_queue', 'Vet Queue'), icon: HeartPulse },
+    { id: 'vet_kiosk', label: t('nav.vet_intake', 'Vet Intake'), icon: Activity },
+    { id: 'patient', label: t('nav.patient_portal', 'Patient Portal'), icon: User },
   ];
 
   const handleTabClick = (tabId) => {
@@ -96,7 +99,7 @@ export default function Navbar({
                 WebkitTextFillColor: 'transparent',
                 textShadow: theme === 'dark' ? '0 0 20px rgba(56, 189, 248, 0.35)' : 'none'
               }}>
-                AROGYA
+                {t('nav.brand_title', 'AROGYA')}
               </span>
               <span style={{ 
                 fontSize: '0.75rem', 
@@ -108,7 +111,7 @@ export default function Navbar({
                 borderRadius: '6px',
                 border: theme === 'dark' ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid #bfdbfe'
               }}>
-                TRIAGE HUD
+                {t('nav.brand_sub', 'TRIAGE HUD')}
               </span>
             </div>
           </div>
@@ -266,8 +269,65 @@ export default function Navbar({
               title="Clear queue records for fresh human testing"
             >
               <RefreshCw size={11} className={isResetting ? 'pulse-beacon-yellow' : ''} />
-              <span>Reset</span>
+              <span>{isResetting ? t('nav.resetting', 'Clearing...') : t('nav.reset_queue', 'Reset')}</span>
             </motion.button>
+          </div>
+
+          {/* Segmented Multilingual Switcher: EN | हिन्दी | ଓଡ଼ିଆ */}
+          <div 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: theme === 'dark' ? 'rgba(15, 23, 42, 0.75)' : '#e2e8f0',
+              border: theme === 'dark' ? '1px solid rgba(56, 189, 248, 0.28)' : '1px solid #cbd5e1',
+              borderRadius: '9999px',
+              padding: '2px',
+              gap: '2px',
+              boxShadow: theme === 'dark' ? 'inset 0 1px 3px rgba(0,0,0,0.5)' : 'inset 0 1px 2px rgba(0,0,0,0.06)'
+            }}
+            title="Arogya Interface Language (ଭାଷା / भाषा)"
+          >
+            <div style={{ padding: '0 0.25rem 0 0.45rem', display: 'flex', alignItems: 'center' }}>
+              <Globe size={12} color="var(--text-highlight)" />
+            </div>
+            {availableLanguages.map((lang) => {
+              const isSelected = language === lang.code;
+              return (
+                <motion.button
+                  key={lang.code}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    playBlip(680, 0.03);
+                    setLanguage(lang.code);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: isSelected 
+                      ? (theme === 'dark' ? 'var(--color-blue)' : '#ffffff') 
+                      : 'transparent',
+                    color: isSelected 
+                      ? (theme === 'dark' ? '#ffffff' : 'var(--color-blue)') 
+                      : 'var(--text-muted)',
+                    boxShadow: isSelected 
+                      ? (theme === 'dark' ? '0 1px 6px rgba(0, 0, 0, 0.4), 0 0 10px rgba(56, 189, 248, 0.25)' : '0 1px 4px rgba(0, 0, 0, 0.12), 0 0 8px rgba(37, 99, 235, 0.15)') 
+                      : 'none',
+                    border: isSelected 
+                      ? (theme === 'dark' ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid #bfdbfe') 
+                      : '1px solid transparent',
+                    borderRadius: '9999px',
+                    padding: '0.22rem 0.55rem',
+                    fontSize: '0.72rem',
+                    fontWeight: isSelected ? '800' : '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)'
+                  }}
+                  title={lang.label}
+                >
+                  {lang.nativeLabel}
+                </motion.button>
+              );
+            })}
           </div>
 
           {/* Crisp Segmented Theme Pill Switcher: Light (Active/Default) & Dark */}
@@ -311,7 +371,7 @@ export default function Navbar({
               title="Clinical Light Theme (Default)"
             >
               <Sun size={12} color={theme === 'light' ? '#d97706' : 'currentColor'} />
-              <span>Light</span>
+              <span>{t('nav.theme_light', 'Light')}</span>
             </motion.button>
 
             <motion.button
@@ -341,7 +401,7 @@ export default function Navbar({
               title="Obsidian Dark Theme"
             >
               <Moon size={12} color={theme === 'dark' ? '#38bdf8' : 'currentColor'} />
-              <span>Dark</span>
+              <span>{t('nav.theme_dark', 'Dark')}</span>
             </motion.button>
           </div>
 
@@ -369,7 +429,7 @@ export default function Navbar({
                   playBlip(550, 0.03);
                   onLogout();
                 }}
-                title="Sign Out"
+                title={t('nav.sign_out', 'Sign Out')}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -394,7 +454,7 @@ export default function Navbar({
               className="btn btn-primary"
               style={{ padding: '0.4rem 0.9rem', fontSize: '0.78rem' }}
             >
-              Sign In
+              {t('nav.sign_in', 'Staff Login')}
             </motion.button>
           )}
         </div>

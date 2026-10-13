@@ -7,6 +7,7 @@ import {
   ChevronRight, ArrowUpRight, Search, Filter 
 } from 'lucide-react';
 import { playBlip, playSuccessChime } from '../utils/soundEffects';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function VeterinaryReviewDashboard({
   queue,
@@ -16,6 +17,7 @@ export default function VeterinaryReviewDashboard({
   onOpenOverrideModal,
   isActionLoading
 }) {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [speciesFilter, setSpeciesFilter] = useState('ALL');
@@ -59,7 +61,7 @@ export default function VeterinaryReviewDashboard({
             <span className="pulse-beacon-red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }}></span>
             <div>
               <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--banner-red-title)' }}>
-                CRITICAL VETERINARY EMERGENCY: {redCount} RED Animal Case(s)
+                {t('doctor.critical_alert', 'CRITICAL VETERINARY EMERGENCY')}: {redCount} RED Animal Case(s)
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--banner-red-sub)' }}>
                 Severe bloat / respiratory distress / hemorrhagic enteritis requiring immediate veterinary triage.
@@ -73,7 +75,7 @@ export default function VeterinaryReviewDashboard({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <HeartPulse size={18} color="#10b981" />
-              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>Prioritized Veterinary Queue</h2>
+              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>{t('vet_dashboard.queue_header', 'Veterinary Triage Queue')}</h2>
             </div>
             <span className="badge badge-green" style={{ fontSize: '0.72rem' }}>
               {filteredQueue.length} Active Cases
@@ -235,7 +237,7 @@ export default function VeterinaryReviewDashboard({
                     disabled={isActionLoading}
                   >
                     <CheckCircle2 size={15} />
-                    Approve Triage
+                    {t('vet_dashboard.approve_vet', 'Signoff Veterinary Plan')}
                   </motion.button>
                 )}
 
@@ -250,7 +252,7 @@ export default function VeterinaryReviewDashboard({
                   }}
                 >
                   <AlertCircle size={15} />
-                  Override VTI
+                  {t('vet_dashboard.override_vet', 'Override Urgency Code')}
                 </motion.button>
 
                 <motion.a 
@@ -365,7 +367,7 @@ export default function VeterinaryReviewDashboard({
             {selectedRecord.critical_actions && selectedRecord.critical_actions.length > 0 && (
               <div>
                 <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--color-green)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  3. Immediate Field Stabilization Directives (Non-Pharmacological)
+                  {t('vet_dashboard.field_directives', '3. Immediate Field Stabilization Directives (Non-Pharmacological)')}
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {selectedRecord.critical_actions.map((act, i) => (
@@ -428,7 +430,7 @@ export default function VeterinaryReviewDashboard({
           <div className="glass-card" style={{ padding: '3rem 2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
             <HeartPulse size={36} color="#059669" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
             <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Select a Veterinary Case to Review
+              {t('vet_dashboard.empty_queue', 'No veterinary cases pending. Ingest an animal intake above.')}
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto' }}>
               Choose a bovine or canine case from the queue on the left to evaluate clinical findings, approve triage, or override with clinical justification.

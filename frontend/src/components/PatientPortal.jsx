@@ -5,12 +5,14 @@ import {
   QrCode, ExternalLink, Sparkles, Building2, HeartPulse, 
   ChevronRight, Heart
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function PatientPortal({ 
   patientUser, 
   queue = [], 
   onSwitchToKiosk
 }) {
+  const { t } = useLanguage();
   const [symptomAlertSent, setSymptomAlertSent] = useState(false);
   const [symptomText, setSymptomText] = useState('');
 
@@ -170,7 +172,7 @@ export default function PatientPortal({
                   ESI LEVEL {esiLevel} • {status.label}
                 </span>
                 <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  Est. Wait: <strong style={{ color: 'var(--text-primary)' }}>{status.wait}</strong>
+                  {t('patient_portal.est_wait', 'Est. Wait:')} <strong style={{ color: 'var(--text-primary)' }}>{status.wait}</strong>
                 </span>
               </div>
 
@@ -225,7 +227,7 @@ export default function PatientPortal({
             <div style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <HeartPulse size={18} color="var(--text-highlight)" />
-                <span>Recorded Clinical Vitals</span>
+                <span>{t('patient_portal.vitals_title', 'Recorded Clinical Vitals')}</span>
               </div>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Real-Time Ingestion</span>
             </div>

@@ -7,6 +7,7 @@ import {
   ChevronRight, ArrowUpRight, Search, Filter 
 } from 'lucide-react';
 import { playBlip, playSuccessChime } from '../utils/soundEffects';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function DoctorReviewDashboard({
   queue,
@@ -18,6 +19,7 @@ export default function DoctorReviewDashboard({
   onOpenLabImageModal,
   isActionLoading
 }) {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [districtFilter, setDistrictFilter] = useState('ALL');
@@ -57,7 +59,7 @@ export default function DoctorReviewDashboard({
             <span className="pulse-beacon-red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }}></span>
             <div>
               <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--banner-red-title)' }}>
-                CRITICAL EMERGENCY ALERT: {redCount} RED Case(s)
+                {t('doctor.critical_alert', 'CRITICAL EMERGENCY ALERT')}: {redCount} RED Case(s)
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--banner-red-sub)' }}>
                 Severe hemodynamic instability or critical thrombocytopenia. Immediate triage action required.
@@ -71,7 +73,7 @@ export default function DoctorReviewDashboard({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Stethoscope size={18} color="#38bdf8" />
-              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>Prioritized Live Queue</h2>
+              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>{t('doctor.queue_header', 'Prioritized Live Queue')}</h2>
             </div>
             <span className="badge badge-blue" style={{ fontSize: '0.72rem' }}>
               {filteredQueue.length} Active Patients
@@ -267,7 +269,7 @@ export default function DoctorReviewDashboard({
                     disabled={isActionLoading}
                   >
                     <CheckCircle2 size={15} />
-                    Approve Triage
+                    {t('doctor.approve_btn', 'Approve Triage')}
                   </motion.button>
                 )}
 
@@ -282,7 +284,7 @@ export default function DoctorReviewDashboard({
                   }}
                 >
                   <AlertCircle size={15} />
-                  Override ESI
+                  {t('doctor.override_btn', 'Override ESI')}
                 </motion.button>
 
                 <motion.a 
@@ -338,7 +340,7 @@ export default function DoctorReviewDashboard({
             {/* Physiological Vitals Matrix */}
             <div>
               <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                1. Physiological Vitals Matrix
+                {t('doctor.vitals_matrix', '1. Physiological Vitals Matrix')}
               </h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.75rem' }}>
                 <div style={{ 
@@ -450,7 +452,7 @@ export default function DoctorReviewDashboard({
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  3. Multimodal Laboratory Analysis (OCR Validated)
+                  {t('doctor.lab_findings', '3. Multimodal Laboratory Analysis (OCR Validated)')}
                 </h4>
                 {selectedRecord.lab_image_path && (
                   <button 
@@ -518,7 +520,7 @@ export default function DoctorReviewDashboard({
             <div>
               <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-highlight)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <AlertTriangle size={15} color="var(--text-highlight)" />
-                4. Automated Follow-Up Inquiries for Attending Doctor
+                {t('doctor.auto_inquiries', '4. Automated Follow-Up Inquiries for Attending Doctor')}
               </h4>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
@@ -567,7 +569,7 @@ export default function DoctorReviewDashboard({
           <div className="glass-card" style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--text-muted)' }}>
             <Stethoscope size={48} color="#334155" style={{ margin: '0 auto 1rem' }} />
             <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Select a Patient from the Prioritized Queue
+              {t('doctor.empty_queue', 'Select a Patient from the Prioritized Queue')}
             </h3>
             <p style={{ fontSize: '0.85rem', maxWidth: '420px', margin: '0 auto' }}>
               Click any patient card on the left to review physiological vitals, OCR lab extractions, chronological timeline, and single-action escalation controls.

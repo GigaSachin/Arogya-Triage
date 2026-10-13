@@ -4,12 +4,15 @@ import {
   AlertTriangle, ShieldCheck, Heart, User, MapPin, 
   Sparkles, ArrowRight, Eye, RefreshCw, Volume2, Key, X 
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function IntakeKiosk({ 
   onIntakeSuccess, 
   scenarioData, 
   onClearScenario 
 }) {
+  const { t, language } = useLanguage();
+
   // Facility & Patient Demographics
   const [facilityId, setFacilityId] = useState('FAC-ROU-01');
   const [patientName, setPatientName] = useState('');
@@ -17,8 +20,14 @@ export default function IntakeKiosk({
   const [phone, setPhone] = useState('');
   const [consentGiven, setConsentGiven] = useState(true);
 
-  // Vernacular Voice State
-  const [vernacularLang, setVernacularLang] = useState('odia');
+  // Vernacular Voice State (auto-sync with global language)
+  const [vernacularLang, setVernacularLang] = useState(language === 'hi' ? 'hindi' : (language === 'or' ? 'odia' : 'english'));
+
+  useEffect(() => {
+    if (language === 'or') setVernacularLang('odia');
+    else if (language === 'hi') setVernacularLang('hindi');
+    else if (language === 'en') setVernacularLang('english');
+  }, [language]);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [isTranscribingAudio, setIsTranscribingAudio] = useState(false);
@@ -537,7 +546,7 @@ export default function IntakeKiosk({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <MapPin size={18} color="#38bdf8" />
-              <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>Triage Intake Node & Demographics</h2>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>{t('kiosk.demographics_title', 'Triage Intake Node & Demographics')}</h2>
               <span className="badge badge-green" style={{ fontSize: '0.7rem' }}>Live Human Operator Mode</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#86efac', fontSize: '0.75rem', fontWeight: '600' }}>
@@ -566,7 +575,7 @@ export default function IntakeKiosk({
             </div>
             <div>
               <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.3rem' }}>
-                Patient Legal Name (Masked for Public Surveillance)
+                {t('kiosk.name_label', 'Patient Legal Name (Masked for Public Surveillance)')}
               </label>
               <input 
                 type="text" 
@@ -581,7 +590,7 @@ export default function IntakeKiosk({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', alignItems: 'center' }}>
             <div>
               <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.3rem' }}>
-                12-Digit Aadhaar (Masked to XXXX)
+                {t('kiosk.aadhaar_label', '12-Digit Aadhaar (Masked to XXXX)')}
               </label>
               <input 
                 type="text" 
@@ -593,7 +602,7 @@ export default function IntakeKiosk({
             </div>
             <div>
               <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.3rem' }}>
-                10-Digit Mobile Phone
+                {t('kiosk.mobile_label', '10-Digit Mobile Phone')}
               </label>
               <input 
                 type="text" 
@@ -630,7 +639,7 @@ export default function IntakeKiosk({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Volume2 size={18} color="#3b82f6" />
-              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>Voice & Chief Complaints</h2>
+              <h2 style={{ fontSize: '1rem', fontWeight: '700' }}>{t('kiosk.voice_title', 'Voice & Chief Complaints')}</h2>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -715,14 +724,14 @@ export default function IntakeKiosk({
                   {isRecording ? (
                     <>
                       <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444' }}></span>
-                      <span>Listening... bolte rahiye, text niche live type ho raha hai ({formatTimer(recordingSeconds)})</span>
+                      <span>{t('kiosk.voice_btn_stop', 'Listening... keep speaking, text types below')} ({formatTimer(recordingSeconds)})</span>
                     </>
                   ) : (
-                    <span>Click mic to speak symptoms — speech directly types below</span>
+                    <span>{t('kiosk.voice_btn_start', 'Click mic to speak symptoms — speech directly types below')}</span>
                   )}
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  Supports spoken Hindi, Odia, or English with live realtime transcription
+                  {t('kiosk.voice_sub', 'Supports spoken Hindi, Odia, or English with live realtime transcription')}
                 </div>
               </div>
             </div>
@@ -748,7 +757,7 @@ export default function IntakeKiosk({
                     onClick={() => audioFileInputRef.current && audioFileInputRef.current.click()}
                     title="Upload recorded audio note from patient (.wav, .mp3, .m4a, .webm)"
                   >
-                    <Upload size={12} /> Upload Audio File
+                    <Upload size={12} /> {t('kiosk.voice_upload', 'Upload Audio File')}
                   </button>
                   {symptomsRaw && (
                     <button 
@@ -763,7 +772,7 @@ export default function IntakeKiosk({
                       }}
                       title="Clear spoken text"
                     >
-                      Clear Spoken Text
+                      {t('kiosk.voice_clear', 'Clear Spoken Text')}
                     </button>
                   )}
                 </div>
@@ -771,11 +780,11 @@ export default function IntakeKiosk({
             </div>
           </div>
 
-          {/* Client-Side Review Box (PRD FR-1.4: allows health workers to make manual adjustments prior to submission) */}
+          {/* Client-Side Review Box */}
           <div style={{ marginBottom: '0.85rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
               <label style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-secondary)' }}>
-                Client-Side Review Box (Transcribed Vernacular Text - Editable)
+                {t('kiosk.review_box', 'Client-Side Review Box (Transcribed Vernacular Text - Editable)')}
               </label>
               <span style={{ fontSize: '0.7rem', color: '#38bdf8' }}>
                 Health worker manual verification enabled
@@ -794,7 +803,7 @@ export default function IntakeKiosk({
           {translatedEnglish && (
             <div style={{ background: 'var(--color-blue-bg)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-blue-border)', marginBottom: '0.85rem' }}>
               <div style={{ fontSize: '0.72rem', color: 'var(--color-blue)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-                Normalized Clinical Translation:
+                {t('kiosk.normalized_translation', 'Normalized Clinical Translation:')}
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                 {translatedEnglish}
@@ -834,7 +843,7 @@ export default function IntakeKiosk({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <FileText size={18} color="#06b6d4" />
-              <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>Multimodal Lab Slip Ingestion & OCR</h2>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>{t('kiosk.ocr_title', 'Multimodal Lab Slip Ingestion & OCR')}</h2>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               <span className="badge badge-blue" style={{ fontSize: '0.7rem' }}>
@@ -861,10 +870,10 @@ export default function IntakeKiosk({
 
           <input 
             type="file" 
-            ref={fileInputRef}
+            ref={fileInputRef} 
             onChange={handleFileUpload} 
             accept="image/png, image/jpeg, application/pdf" 
-            style={{ display: 'none' }}
+            style={{ display: 'none' }} 
           />
 
           <div 
@@ -883,10 +892,10 @@ export default function IntakeKiosk({
           >
             <Upload size={28} color="#64748b" style={{ margin: '0 auto 0.5rem' }} />
             <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)' }}>
-              Drag & drop physical lab report or click to browse
+              {t('kiosk.ocr_dropzone', 'Drag & drop physical lab report or click to browse')}
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              Supports PNG, JPEG, PDF up to 5MB • Tabular parameter parser with ICMR thresholds
+              {t('kiosk.ocr_hint', 'Supports PNG, JPEG, PDF up to 5MB • Tabular parameter parser with ICMR thresholds')}
             </div>
           </div>
 
@@ -894,7 +903,7 @@ export default function IntakeKiosk({
           {isProcessingOCR && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '1rem', color: '#2563eb', fontSize: '0.85rem' }}>
               <RefreshCw size={16} className="pulse-beacon-yellow" />
-              <span>Scanning report slip, isolating tabular entries & verifying units...</span>
+              <span>{t('kiosk.ocr_scanning', 'Scanning report slip, isolating tabular entries & verifying units...')}</span>
             </div>
           )}
 
@@ -949,7 +958,7 @@ export default function IntakeKiosk({
         <div className="glass-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
             <Heart size={18} color="#ef4444" />
-            <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>Physiological Vitals Ingestion</h2>
+            <h2 style={{ fontSize: '1.05rem', fontWeight: '700' }}>{t('kiosk.vitals_title', 'Physiological Vitals Ingestion')}</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
@@ -961,7 +970,7 @@ export default function IntakeKiosk({
               padding: '0.75rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                <span>SpO2 (Pulse Oximetry)</span>
+                <span>{t('kiosk.spo2_label', 'SpO2 (Pulse Oximetry)')}</span>
                 <span>%</span>
               </div>
               <input 
@@ -985,7 +994,7 @@ export default function IntakeKiosk({
               padding: '0.75rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                <span>Pulse / Heart Rate</span>
+                <span>{t('kiosk.pulse_label', 'Pulse / Heart Rate')}</span>
                 <span>bpm</span>
               </div>
               <input 
@@ -1004,7 +1013,7 @@ export default function IntakeKiosk({
             {/* Blood Pressure Systolic */}
             <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                <span>Systolic BP</span>
+                <span>{t('kiosk.bp_systolic', 'Systolic BP')}</span>
                 <span>mmHg</span>
               </div>
               <input 
@@ -1023,7 +1032,7 @@ export default function IntakeKiosk({
             {/* Blood Pressure Diastolic */}
             <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                <span>Diastolic BP</span>
+                <span>{t('kiosk.bp_diastolic', 'Diastolic BP')}</span>
                 <span>mmHg</span>
               </div>
               <input 
@@ -1047,7 +1056,7 @@ export default function IntakeKiosk({
               padding: '0.75rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                <span>Core Temperature</span>
+                <span>{t('kiosk.temp_label', 'Core Temperature')}</span>
                 <span>°F</span>
               </div>
               <input 
@@ -1067,7 +1076,7 @@ export default function IntakeKiosk({
             {/* Respiration Rate */}
             <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                <span>Respiration Rate</span>
+                <span>{t('kiosk.resp_label', 'Respiration Rate')}</span>
                 <span>/min</span>
               </div>
               <input 
@@ -1092,7 +1101,7 @@ export default function IntakeKiosk({
               style={{ flex: '1' }}
               onClick={handleClearForm}
             >
-              Clear Form
+              {t('kiosk.clear_btn', 'Clear Form')}
             </button>
             <button 
               type="button" 
@@ -1104,12 +1113,12 @@ export default function IntakeKiosk({
               {isSubmitting ? (
                 <>
                   <RefreshCw size={16} className="pulse-beacon-yellow" />
-                  Calculating MCP Triage...
+                  {t('kiosk.submitting_btn', 'Calculating MCP Triage...')}
                 </>
               ) : (
                 <>
                   <Sparkles size={16} />
-                  Submit to Priority Queue
+                  {t('kiosk.submit_btn', 'Submit to Priority Queue')}
                 </>
               )}
             </button>
