@@ -635,7 +635,7 @@ export default function IntakeKiosk({
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {/* Language Selector */}
-              <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(9, 11, 16, 0.6)', padding: '0.2rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', gap: '0.25rem', background: 'var(--bg-surface-elevated)', padding: '0.2rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
                 <button 
                   type="button"
                   onClick={() => setVernacularLang('odia')}
@@ -645,7 +645,7 @@ export default function IntakeKiosk({
                     fontWeight: '600',
                     borderRadius: '6px',
                     border: 'none',
-                    background: vernacularLang === 'odia' ? '#2563eb' : 'transparent',
+                    background: vernacularLang === 'odia' ? 'var(--color-blue)' : 'transparent',
                     color: vernacularLang === 'odia' ? '#ffffff' : 'var(--text-secondary)',
                     cursor: 'pointer'
                   }}
@@ -661,7 +661,7 @@ export default function IntakeKiosk({
                     fontWeight: '600',
                     borderRadius: '6px',
                     border: 'none',
-                    background: vernacularLang === 'hindi' ? '#2563eb' : 'transparent',
+                    background: vernacularLang === 'hindi' ? 'var(--color-blue)' : 'transparent',
                     color: vernacularLang === 'hindi' ? '#ffffff' : 'var(--text-secondary)',
                     cursor: 'pointer'
                   }}
@@ -677,7 +677,7 @@ export default function IntakeKiosk({
                     fontWeight: '600',
                     borderRadius: '6px',
                     border: 'none',
-                    background: vernacularLang === 'english' ? '#2563eb' : 'transparent',
+                    background: vernacularLang === 'english' ? 'var(--color-blue)' : 'transparent',
                     color: vernacularLang === 'english' ? '#ffffff' : 'var(--text-secondary)',
                     cursor: 'pointer'
                   }}
@@ -690,8 +690,8 @@ export default function IntakeKiosk({
 
           {/* Voice Recording Interactive Bar */}
           <div style={{
-            background: isRecording ? 'rgba(239, 68, 68, 0.08)' : 'rgba(14, 18, 26, 0.7)',
-            border: isRecording ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid var(--border-subtle)',
+            background: isRecording ? 'var(--color-red-bg)' : 'var(--bg-surface-elevated)',
+            border: isRecording ? '1px solid var(--color-red-border)' : '1px solid var(--border-subtle)',
             borderRadius: '10px',
             padding: '0.85rem 1.25rem',
             display: 'flex',
@@ -711,7 +711,7 @@ export default function IntakeKiosk({
                 {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
               </button>
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: '600', color: isRecording ? '#f87171' : '#ffffff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: '600', color: isRecording ? 'var(--color-red)' : 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   {isRecording ? (
                     <>
                       <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444' }}></span>
@@ -792,8 +792,8 @@ export default function IntakeKiosk({
 
           {/* Clinical English Normalization & Extracted Symptoms Chips */}
           {translatedEnglish && (
-            <div style={{ background: '#eff6ff', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #bfdbfe', marginBottom: '0.85rem' }}>
-              <div style={{ fontSize: '0.72rem', color: '#1d4ed8', fontWeight: '700', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+            <div style={{ background: 'var(--color-blue-bg)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-blue-border)', marginBottom: '0.85rem' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--color-blue)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
                 Normalized Clinical Translation:
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
@@ -813,7 +813,7 @@ export default function IntakeKiosk({
 
           {/* Chronological Symptom Timeline */}
           {symptomTimeline.length > 0 && (
-            <div style={{ background: '#f8fafc', padding: '0.65rem 1rem', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem 1rem', borderRadius: '8px', border: '1px dashed var(--border-subtle)' }}>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>
                 Chronological Symptom Progression:
               </span>
@@ -870,16 +870,16 @@ export default function IntakeKiosk({
           <div 
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
             style={{
-              border: '2px dashed #cbd5e1',
+              border: '2px dashed var(--border-subtle)',
               borderRadius: '10px',
               padding: '1.5rem',
               textAlign: 'center',
               cursor: 'pointer',
-              background: '#f8fafc',
+              background: 'var(--bg-surface-elevated)',
               transition: 'border-color 0.2s'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#2563eb'}
-            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-blue)'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-subtle)'}
           >
             <Upload size={28} color="#64748b" style={{ margin: '0 auto 0.5rem' }} />
             <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)' }}>
@@ -955,8 +955,8 @@ export default function IntakeKiosk({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
             {/* SpO2 */}
             <div style={{
-              background: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '#fef2f2' : '#f8fafc',
-              border: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '1px solid #fecaca' : '1px solid var(--border-subtle)',
+              background: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? 'var(--color-red-bg)' : 'var(--bg-surface-elevated)',
+              border: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '1px solid var(--color-red-border)' : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               padding: '0.75rem'
             }}>
@@ -972,15 +972,15 @@ export default function IntakeKiosk({
                 onChange={(e) => setVitals({ ...vitals, spo2: e.target.value })}
                 style={{ fontSize: '1.1rem', fontWeight: '700', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}
               />
-              <span style={{ fontSize: '0.68rem', color: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? '#dc2626' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.68rem', color: vitals.spo2 && parseFloat(vitals.spo2) < 90 ? 'var(--color-red)' : 'var(--text-muted)' }}>
                 Danger Zone: &lt; 90% (Hypoxemia)
               </span>
             </div>
 
             {/* Pulse */}
             <div style={{
-              background: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '#fef2f2' : '#f8fafc',
-              border: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '1px solid #fecaca' : '1px solid var(--border-subtle)',
+              background: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? 'var(--color-red-bg)' : 'var(--bg-surface-elevated)',
+              border: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '1px solid var(--color-red-border)' : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               padding: '0.75rem'
             }}>
@@ -996,13 +996,13 @@ export default function IntakeKiosk({
                 onChange={(e) => setVitals({ ...vitals, pulse: e.target.value })}
                 style={{ fontSize: '1.1rem', fontWeight: '700', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}
               />
-              <span style={{ fontSize: '0.68rem', color: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? '#dc2626' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.68rem', color: vitals.pulse && parseFloat(vitals.pulse) >= 120 ? 'var(--color-red)' : 'var(--text-muted)' }}>
                 Danger Zone: &gt;= 120 bpm (Tachycardia)
               </span>
             </div>
 
             {/* Blood Pressure Systolic */}
-            <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                 <span>Systolic BP</span>
                 <span>mmHg</span>
@@ -1021,7 +1021,7 @@ export default function IntakeKiosk({
             </div>
 
             {/* Blood Pressure Diastolic */}
-            <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                 <span>Diastolic BP</span>
                 <span>mmHg</span>
@@ -1041,8 +1041,8 @@ export default function IntakeKiosk({
 
             {/* Temperature */}
             <div style={{
-              background: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '#fffbeb' : '#f8fafc',
-              border: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '1px solid #fde68a' : '1px solid var(--border-subtle)',
+              background: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? 'var(--color-yellow-bg)' : 'var(--bg-surface-elevated)',
+              border: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '1px solid var(--color-yellow-border)' : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               padding: '0.75rem'
             }}>
@@ -1059,13 +1059,13 @@ export default function IntakeKiosk({
                 onChange={(e) => setVitals({ ...vitals, temperature: e.target.value })}
                 style={{ fontSize: '1.1rem', fontWeight: '700', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}
               />
-              <span style={{ fontSize: '0.68rem', color: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? '#d97706' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.68rem', color: vitals.temperature && parseFloat(vitals.temperature) >= 101.5 ? 'var(--color-yellow)' : 'var(--text-muted)' }}>
                 Febrile: &gt;= 101.5°F
               </span>
             </div>
 
             {/* Respiration Rate */}
-            <div style={{ background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
                 <span>Respiration Rate</span>
                 <span>/min</span>
@@ -1128,7 +1128,7 @@ export default function IntakeKiosk({
             </div>
             
             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-              Record ID: <strong style={{ color: '#ffffff', fontFamily: 'var(--font-mono)' }}>{submissionResult.record_id}</strong>
+              Record ID: <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{submissionResult.record_id}</strong>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
@@ -1212,13 +1212,13 @@ export default function IntakeKiosk({
             {/* Modal Body */}
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: '1.5' }}>
               Paste your Sarvam AI Subscription Key to activate real-time speech recognition in 
-              <strong style={{ color: '#ffffff' }}> Odia (od-IN)</strong>, <strong style={{ color: '#ffffff' }}>Hindi (hi-IN)</strong>, and <strong style={{ color: '#ffffff' }}>English (en-IN)</strong>, with automated translation & voice feedback.
+              <strong style={{ color: 'var(--text-primary)' }}> Odia (od-IN)</strong>, <strong style={{ color: 'var(--text-primary)' }}>Hindi (hi-IN)</strong>, and <strong style={{ color: 'var(--text-primary)' }}>English (en-IN)</strong>, with automated translation & voice feedback.
             </p>
 
-            <div style={{ background: '#090d16', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '0.85rem', marginBottom: '1.25rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '0.85rem', marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem', fontSize: '0.75rem' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-                <span style={{ color: (sarvamApiKey || (sarvamStatus && sarvamStatus.sarvam_configured)) ? '#86efac' : '#f59e0b', fontWeight: '600' }}>
+                <span style={{ color: (sarvamApiKey || (sarvamStatus && sarvamStatus.sarvam_configured)) ? 'var(--color-green)' : 'var(--color-yellow)', fontWeight: '600' }}>
                   {(sarvamApiKey || (sarvamStatus && sarvamStatus.sarvam_configured)) ? '✓ Key Configured & Active' : '⚠ Demo Fallback Active'}
                 </span>
               </div>

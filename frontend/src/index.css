@@ -58,6 +58,30 @@
 
   --panel-bg: #ffffff;
   --table-header-bg: #f8fafc;
+
+  /* Brand Typography Gradients & Telemetry Tokens */
+  --title-gradient: linear-gradient(135deg, #0f172a 0%, #1e40af 55%, #0284c7 100%);
+  --title-shadow: 0 2px 14px rgba(37, 99, 235, 0.12);
+  --telemetry-pill-bg: #f1f5f9;
+  --telemetry-pill-border: #cbd5e1;
+
+  /* Navigation Pills */
+  --nav-pill-bg-human: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  --nav-pill-border-human: #0284c7;
+  --nav-pill-bg-vet: linear-gradient(135deg, #059669 0%, #047857 100%);
+  --nav-pill-border-vet: #059669;
+  --nav-active-text: #ffffff;
+  --nav-active-icon: #ffffff;
+
+  /* Alert & Status Typography Tokens */
+  --banner-red-title: #991b1b;
+  --banner-red-sub: #b91c1c;
+  --banner-yellow-title: #92400e;
+  --banner-yellow-sub: #b45309;
+  --banner-green-title: #065f46;
+  --banner-green-sub: #047857;
+  --banner-blue-title: #1e40af;
+  --banner-blue-sub: #2563eb;
 }
 
 /* --- 2. DARK THEME (Obsidian Cyber-Clinical HUD - Optional Override) --- */
@@ -113,6 +137,30 @@
 
   --panel-bg: rgba(10, 16, 32, 0.85);
   --table-header-bg: rgba(15, 23, 42, 0.9);
+
+  /* Brand Typography Gradients & Telemetry Tokens */
+  --title-gradient: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%);
+  --title-shadow: 0 0 35px rgba(56, 189, 248, 0.35);
+  --telemetry-pill-bg: rgba(15, 23, 42, 0.85);
+  --telemetry-pill-border: rgba(56, 189, 248, 0.3);
+
+  /* Navigation Pills */
+  --nav-pill-bg-human: linear-gradient(135deg, rgba(0, 242, 254, 0.28) 0%, rgba(37, 99, 235, 0.2) 100%);
+  --nav-pill-border-human: rgba(0, 242, 254, 0.65);
+  --nav-pill-bg-vet: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.15) 100%);
+  --nav-pill-border-vet: rgba(16, 185, 129, 0.6);
+  --nav-active-text: #ffffff;
+  --nav-active-icon: #00f2fe;
+
+  /* Alert & Status Typography Tokens */
+  --banner-red-title: #fca5a5;
+  --banner-red-sub: #fecaca;
+  --banner-yellow-title: #fde68a;
+  --banner-yellow-sub: #fef08a;
+  --banner-green-title: #86efac;
+  --banner-green-sub: #bbf7d0;
+  --banner-blue-title: #7dd3fc;
+  --banner-blue-sub: #bae6fd;
 }
 
 * {

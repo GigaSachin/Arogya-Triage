@@ -156,7 +156,7 @@ export default function LoginPage({ onLogin }) {
         {/* Left Hero Showcase */}
         <div style={{
           padding: '3rem 2.5rem',
-          background: '#f8fafc',
+          background: 'var(--bg-surface-elevated)',
           borderRight: '1px solid var(--border-subtle)',
           display: 'flex',
           flexDirection: 'column',
@@ -169,16 +169,16 @@ export default function LoginPage({ onLogin }) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              background: '#eff6ff',
-              border: '1px solid #bfdbfe',
+              background: 'var(--color-blue-bg)',
+              border: '1px solid var(--color-blue-border)',
               borderRadius: '9999px',
               padding: '0.35rem 0.85rem',
               fontSize: '0.75rem',
-              color: '#1d4ed8',
+              color: 'var(--text-highlight)',
               fontWeight: '600',
               marginBottom: '1.75rem'
             }}>
-              <ShieldCheck size={14} color="#2563eb" />
+              <ShieldCheck size={14} color="var(--color-blue)" />
               <span>AROGYA-TRIAGE • CLINICAL GATEWAY</span>
             </div>
 
@@ -205,7 +205,7 @@ export default function LoginPage({ onLogin }) {
 
             {/* Role Capabilities Live Preview */}
             <div style={{
-              background: '#ffffff',
+              background: 'var(--bg-main)',
               border: '1px solid var(--border-subtle)',
               borderRadius: '14px',
               padding: '1.25rem',
@@ -271,7 +271,7 @@ export default function LoginPage({ onLogin }) {
         {/* Right Form Card */}
         <div style={{
           padding: '3rem 2.5rem',
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center'
@@ -291,7 +291,7 @@ export default function LoginPage({ onLogin }) {
             display: 'grid',
             gridTemplateColumns: 'repeat(5, 1fr)',
             gap: '0.35rem',
-            background: '#f1f5f9',
+            background: 'var(--bg-surface-elevated)',
             padding: '0.35rem',
             borderRadius: '12px',
             border: '1px solid var(--border-subtle)',
@@ -307,16 +307,16 @@ export default function LoginPage({ onLogin }) {
                 alignItems: 'center',
                 gap: '0.3rem',
                 padding: '0.65rem 0.35rem',
-                background: selectedRole === 'doctor' ? '#ffffff' : 'transparent',
-                border: selectedRole === 'doctor' ? '1px solid #bfdbfe' : '1px solid transparent',
+                background: selectedRole === 'doctor' ? 'var(--bg-main)' : 'transparent',
+                border: selectedRole === 'doctor' ? '1px solid var(--color-blue-border)' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'doctor' ? '#1d4ed8' : 'var(--text-secondary)',
+                color: selectedRole === 'doctor' ? 'var(--text-highlight)' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'doctor' ? '0 1px 4px rgba(37, 99, 235, 0.15)' : 'none'
+                boxShadow: selectedRole === 'doctor' ? 'var(--shadow-sm)' : 'none'
               }}
             >
-              <Stethoscope size={18} color={selectedRole === 'doctor' ? '#2563eb' : 'currentColor'} />
+              <Stethoscope size={18} color={selectedRole === 'doctor' ? 'var(--color-blue)' : 'currentColor'} />
               <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Doctor</span>
             </button>
 
@@ -330,16 +330,16 @@ export default function LoginPage({ onLogin }) {
                 alignItems: 'center',
                 gap: '0.3rem',
                 padding: '0.65rem 0.35rem',
-                background: selectedRole === 'anm_gnm' ? '#ffffff' : 'transparent',
-                border: selectedRole === 'anm_gnm' ? '1px solid #fde68a' : '1px solid transparent',
+                background: selectedRole === 'anm_gnm' ? 'var(--bg-main)' : 'transparent',
+                border: selectedRole === 'anm_gnm' ? '1px solid var(--color-yellow-border)' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'anm_gnm' ? '#b45309' : 'var(--text-secondary)',
+                color: selectedRole === 'anm_gnm' ? 'var(--color-yellow)' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'anm_gnm' ? '0 1px 4px rgba(245, 158, 11, 0.15)' : 'none'
+                boxShadow: selectedRole === 'anm_gnm' ? 'var(--shadow-sm)' : 'none'
               }}
             >
-              <Activity size={18} color={selectedRole === 'anm_gnm' ? '#d97706' : 'currentColor'} />
+              <Activity size={18} color={selectedRole === 'anm_gnm' ? 'var(--color-yellow)' : 'currentColor'} />
               <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>ANM/GNM</span>
             </button>
 
@@ -353,16 +353,16 @@ export default function LoginPage({ onLogin }) {
                 alignItems: 'center',
                 gap: '0.3rem',
                 padding: '0.65rem 0.35rem',
-                background: selectedRole === 'vet_officer' ? '#ffffff' : 'transparent',
-                border: selectedRole === 'vet_officer' ? '1px solid #a7f3d0' : '1px solid transparent',
+                background: selectedRole === 'vet_officer' ? 'var(--bg-main)' : 'transparent',
+                border: selectedRole === 'vet_officer' ? '1px solid var(--color-green-border)' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'vet_officer' ? '#047857' : 'var(--text-secondary)',
+                color: selectedRole === 'vet_officer' ? 'var(--color-green)' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'vet_officer' ? '0 1px 4px rgba(16, 185, 129, 0.15)' : 'none'
+                boxShadow: selectedRole === 'vet_officer' ? 'var(--shadow-sm)' : 'none'
               }}
             >
-              <HeartPulse size={18} color={selectedRole === 'vet_officer' ? '#059669' : 'currentColor'} />
+              <HeartPulse size={18} color={selectedRole === 'vet_officer' ? 'var(--color-green)' : 'currentColor'} />
               <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Vet Officer</span>
             </button>
 
@@ -376,16 +376,16 @@ export default function LoginPage({ onLogin }) {
                 alignItems: 'center',
                 gap: '0.3rem',
                 padding: '0.65rem 0.35rem',
-                background: selectedRole === 'paravet' ? '#ffffff' : 'transparent',
-                border: selectedRole === 'paravet' ? '1px solid #a5f3fc' : '1px solid transparent',
+                background: selectedRole === 'paravet' ? 'var(--bg-main)' : 'transparent',
+                border: selectedRole === 'paravet' ? '1px solid var(--color-blue-border)' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'paravet' ? '#0e7490' : 'var(--text-secondary)',
+                color: selectedRole === 'paravet' ? 'var(--text-highlight)' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'paravet' ? '0 1px 4px rgba(6, 182, 212, 0.15)' : 'none'
+                boxShadow: selectedRole === 'paravet' ? 'var(--shadow-sm)' : 'none'
               }}
             >
-              <ShieldCheck size={18} color={selectedRole === 'paravet' ? '#0891b2' : 'currentColor'} />
+              <ShieldCheck size={18} color={selectedRole === 'paravet' ? 'var(--color-blue)' : 'currentColor'} />
               <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Paravet</span>
             </button>
 
@@ -399,16 +399,16 @@ export default function LoginPage({ onLogin }) {
                 alignItems: 'center',
                 gap: '0.3rem',
                 padding: '0.65rem 0.35rem',
-                background: selectedRole === 'patient' ? '#ffffff' : 'transparent',
-                border: selectedRole === 'patient' ? '1px solid #ddd6fe' : '1px solid transparent',
+                background: selectedRole === 'patient' ? 'var(--bg-main)' : 'transparent',
+                border: selectedRole === 'patient' ? '1px solid var(--border-specular)' : '1px solid transparent',
                 borderRadius: '9px',
-                color: selectedRole === 'patient' ? '#6d28d9' : 'var(--text-secondary)',
+                color: selectedRole === 'patient' ? 'var(--text-primary)' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: selectedRole === 'patient' ? '0 1px 4px rgba(139, 92, 246, 0.15)' : 'none'
+                boxShadow: selectedRole === 'patient' ? 'var(--shadow-sm)' : 'none'
               }}
             >
-              <User size={18} color={selectedRole === 'patient' ? '#7c3aed' : 'currentColor'} />
+              <User size={18} color={selectedRole === 'patient' ? 'var(--text-highlight)' : 'currentColor'} />
               <span style={{ fontSize: '0.72rem', fontWeight: '700' }}>Patient</span>
             </button>
           </div>
@@ -501,7 +501,7 @@ export default function LoginPage({ onLogin }) {
           <div style={{
             marginTop: '1.75rem',
             paddingTop: '1.25rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--border-subtle)',
             textAlign: 'center'
           }}>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>
@@ -511,7 +511,7 @@ export default function LoginPage({ onLogin }) {
               <button
                 type="button"
                 className="btn btn-outline"
-                style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'rgba(59, 130, 246, 0.4)', color: '#93c5fd' }}
+                style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'var(--color-blue-border)', color: 'var(--text-highlight)', background: 'var(--color-blue-bg)' }}
                 onClick={() => onLogin(personas.doctor)}
               >
                 Dr. S. Mohanty
@@ -519,7 +519,7 @@ export default function LoginPage({ onLogin }) {
               <button
                 type="button"
                 className="btn btn-outline"
-                style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#fde68a' }}
+                style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'var(--color-yellow-border)', color: 'var(--color-yellow)', background: 'var(--color-yellow-bg)' }}
                 onClick={() => onLogin(personas.anm_gnm)}
               >
                 Sunita (ANM)
@@ -527,7 +527,7 @@ export default function LoginPage({ onLogin }) {
               <button
                 type="button"
                 className="btn btn-outline"
-                style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'rgba(16, 185, 129, 0.4)', color: '#86efac' }}
+                style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'var(--color-green-border)', color: 'var(--color-green)', background: 'var(--color-green-bg)' }}
                 onClick={() => onLogin(personas.patient)}
               >
                 Sanjib (Patient)

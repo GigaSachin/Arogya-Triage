@@ -79,8 +79,8 @@ export function ESIOverrideModal({ isOpen, onClose, record, onSubmitOverride }) 
                         style={{
                           padding: '0.65rem',
                           borderRadius: '8px',
-                          border: isSelected ? '2px solid #2563eb' : '1px solid var(--border-subtle)',
-                          background: isSelected ? (isRed ? '#dc2626' : (isYellow ? '#d97706' : '#059669')) : '#f8fafc',
+                          border: isSelected ? '2px solid var(--border-focus)' : '1px solid var(--border-subtle)',
+                          background: isSelected ? (isRed ? 'var(--color-red)' : (isYellow ? 'var(--color-yellow)' : 'var(--color-green)')) : 'var(--bg-surface-elevated)',
                           color: isSelected ? '#ffffff' : 'var(--text-primary)',
                           fontWeight: '700',
                           cursor: 'pointer'
@@ -215,7 +215,7 @@ export function FHIRViewerModal({ isOpen, onClose, fhirBundle }) {
             </p>
 
             <div style={{
-              background: '#f8fafc',
+              background: 'var(--bg-surface-elevated)',
               borderRadius: '8px',
               border: '1px solid var(--border-subtle)',
               padding: '1rem',
@@ -361,14 +361,14 @@ export function VeterinaryOverrideModal({ isOpen, onClose, record, onSubmitOverr
                           padding: '0.65rem',
                           borderRadius: '8px',
                           textAlign: 'left',
-                          border: isSelected ? '2px solid #059669' : '1px solid var(--border-subtle)',
-                          background: isSelected ? (isRed ? '#dc2626' : (isYellow ? '#d97706' : '#059669')) : '#f8fafc',
+                          border: isSelected ? '2px solid var(--color-green-border)' : '1px solid var(--border-subtle)',
+                          background: isSelected ? (isRed ? 'var(--color-red)' : (isYellow ? 'var(--color-yellow)' : 'var(--color-green)')) : 'var(--bg-surface-elevated)',
                           color: isSelected ? '#ffffff' : 'var(--text-primary)',
                           cursor: 'pointer'
                         }}
                       >
                         <div style={{ fontWeight: '700', fontSize: '0.82rem' }}>{opt.label}</div>
-                        <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>{opt.desc}</div>
+                        <div style={{ fontSize: '0.68rem', color: isSelected ? 'rgba(255, 255, 255, 0.9)' : 'var(--text-secondary)' }}>{opt.desc}</div>
                       </motion.button>
                     );
                   })}

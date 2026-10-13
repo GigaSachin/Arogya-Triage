@@ -103,27 +103,27 @@ export default function MCPGovernanceView() {
       
       {/* Top Banner: Architecture & Hallucination Isolation Concept */}
       <div className="glass-card" style={{
-        background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.25), rgba(15, 23, 42, 0.8))',
-        border: '1px solid rgba(59, 130, 246, 0.4)'
+        background: 'var(--color-blue-bg)',
+        border: '1px solid var(--color-blue-border)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
           <div style={{
-            background: '#2563eb',
+            background: 'var(--color-blue)',
             borderRadius: '10px',
             width: '42px',
             height: '42px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(37, 99, 235, 0.6)'
+            boxShadow: '0 0 15px rgba(37, 99, 235, 0.4)'
           }}>
             <Cpu size={24} color="#ffffff" />
           </div>
           <div>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: '800', color: '#ffffff' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)' }}>
               Model Context Protocol (MCP) Deterministic Architecture
             </h2>
-            <p style={{ fontSize: '0.78rem', color: '#93c5fd' }}>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
               Isolating generative language models from emergency triage scoring to achieve 0% hallucination risk
             </p>
           </div>
@@ -135,15 +135,15 @@ export default function MCPGovernanceView() {
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: '1rem',
           marginTop: '1rem',
-          background: 'rgba(11, 15, 25, 0.7)',
+          background: 'var(--bg-surface-elevated)',
           padding: '1.25rem',
           borderRadius: '10px',
           border: '1px solid var(--border-subtle)'
         }}>
           {/* Step 1 */}
-          <div style={{ padding: '0.75rem', borderRadius: '8px', background: '#0f172a', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: '700', marginBottom: '0.25rem' }}>STEP 1: INTAKE</div>
-            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#ffffff', marginBottom: '0.35rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-highlight)', fontWeight: '700', marginBottom: '0.25rem' }}>STEP 1: INTAKE</div>
+            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
               Multimodal Ingestion
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -152,9 +152,9 @@ export default function MCPGovernanceView() {
           </div>
 
           {/* Step 2 */}
-          <div style={{ padding: '0.75rem', borderRadius: '8px', background: '#0f172a', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
-            <div style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: '700', marginBottom: '0.25rem' }}>STEP 2: PRIVACY</div>
-            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#ffffff', marginBottom: '0.35rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--color-green-border)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--color-green)', fontWeight: '700', marginBottom: '0.25rem' }}>STEP 2: PRIVACY</div>
+            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
               In-Flight PII Masking
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -163,20 +163,20 @@ export default function MCPGovernanceView() {
           </div>
 
           {/* Step 3 (MCP Core) */}
-          <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'rgba(37, 99, 235, 0.2)', border: '1.5px solid #3b82f6', boxShadow: '0 0 15px rgba(59, 130, 246, 0.3)' }}>
-            <div style={{ fontSize: '0.7rem', color: '#93c5fd', fontWeight: '800', marginBottom: '0.25rem' }}>STEP 3: CLINICAL MCP</div>
-            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#ffffff', marginBottom: '0.35rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'var(--color-blue-bg)', border: '1.5px solid var(--color-blue-border)', boxShadow: '0 0 15px rgba(59, 130, 246, 0.2)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--color-blue)', fontWeight: '800', marginBottom: '0.25rem' }}>STEP 3: CLINICAL MCP</div>
+            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
               Deterministic Rule Core
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#bfdbfe' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
               Isolated from LLM hallucinations: Rule-bound ESI v4 scoring &amp; ICMR lab reference cutoff checks
             </div>
           </div>
 
           {/* Step 4 */}
-          <div style={{ padding: '0.75rem', borderRadius: '8px', background: '#0f172a', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '0.7rem', color: '#f59e0b', fontWeight: '700', marginBottom: '0.25rem' }}>STEP 4: GOVERNANCE</div>
-            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#ffffff', marginBottom: '0.35rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-card)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--color-yellow)', fontWeight: '700', marginBottom: '0.25rem' }}>STEP 4: GOVERNANCE</div>
+            <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
               Human-in-the-Loop
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -193,7 +193,7 @@ export default function MCPGovernanceView() {
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Terminal size={18} color="#38bdf8" />
+              <Terminal size={18} color="var(--text-highlight)" />
               <h3 style={{ fontSize: '1rem', fontWeight: '700' }}>Clinical MCP Tool Sandbox</h3>
             </div>
             <span className="badge badge-blue" style={{ fontSize: '0.68rem' }}>
@@ -207,56 +207,56 @@ export default function MCPGovernanceView() {
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
               <button 
-                type="button"
+                type="button" 
                 className="btn" 
                 style={{
                   fontSize: '0.75rem',
                   padding: '0.45rem',
-                  background: selectedTool === 'compute_esi_triage' ? '#2563eb' : '#0f172a',
-                  color: '#ffffff',
-                  border: '1px solid var(--border-subtle)'
+                  background: selectedTool === 'compute_esi_triage' ? 'var(--color-blue)' : 'var(--bg-surface-elevated)',
+                  color: selectedTool === 'compute_esi_triage' ? '#ffffff' : 'var(--text-primary)',
+                  border: selectedTool === 'compute_esi_triage' ? '1px solid var(--color-blue)' : '1px solid var(--border-subtle)'
                 }}
                 onClick={() => handleSelectToolPreset('compute_esi_triage')}
               >
                 compute_esi_triage
               </button>
               <button 
-                type="button"
+                type="button" 
                 className="btn" 
                 style={{
                   fontSize: '0.75rem',
                   padding: '0.45rem',
-                  background: selectedTool === 'validate_lab_parameters' ? '#2563eb' : '#0f172a',
-                  color: '#ffffff',
-                  border: '1px solid var(--border-subtle)'
+                  background: selectedTool === 'validate_lab_parameters' ? 'var(--color-blue)' : 'var(--bg-surface-elevated)',
+                  color: selectedTool === 'validate_lab_parameters' ? '#ffffff' : 'var(--text-primary)',
+                  border: selectedTool === 'validate_lab_parameters' ? '1px solid var(--color-blue)' : '1px solid var(--border-subtle)'
                 }}
                 onClick={() => handleSelectToolPreset('validate_lab_parameters')}
               >
                 validate_lab_params
               </button>
               <button 
-                type="button"
+                type="button" 
                 className="btn" 
                 style={{
                   fontSize: '0.75rem',
                   padding: '0.45rem',
-                  background: selectedTool === 'identify_missing_info' ? '#2563eb' : '#0f172a',
-                  color: '#ffffff',
-                  border: '1px solid var(--border-subtle)'
+                  background: selectedTool === 'identify_missing_info' ? 'var(--color-blue)' : 'var(--bg-surface-elevated)',
+                  color: selectedTool === 'identify_missing_info' ? '#ffffff' : 'var(--text-primary)',
+                  border: selectedTool === 'identify_missing_info' ? '1px solid var(--color-blue)' : '1px solid var(--border-subtle)'
                 }}
                 onClick={() => handleSelectToolPreset('identify_missing_info')}
               >
                 identify_missing_info
               </button>
               <button 
-                type="button"
+                type="button" 
                 className="btn" 
                 style={{
                   fontSize: '0.75rem',
                   padding: '0.45rem',
-                  background: selectedTool === 'generate_abdm_fhir_bundle' ? '#2563eb' : '#0f172a',
-                  color: '#ffffff',
-                  border: '1px solid var(--border-subtle)'
+                  background: selectedTool === 'generate_abdm_fhir_bundle' ? 'var(--color-blue)' : 'var(--bg-surface-elevated)',
+                  color: selectedTool === 'generate_abdm_fhir_bundle' ? '#ffffff' : 'var(--text-primary)',
+                  border: selectedTool === 'generate_abdm_fhir_bundle' ? '1px solid var(--color-blue)' : '1px solid var(--border-subtle)'
                 }}
                 onClick={() => handleSelectToolPreset('generate_abdm_fhir_bundle')}
               >
@@ -300,7 +300,7 @@ export default function MCPGovernanceView() {
           </div>
 
           <div style={{
-            background: '#090d16',
+            background: 'var(--bg-surface-elevated)',
             borderRadius: '8px',
             border: '1px solid var(--border-subtle)',
             padding: '1rem',
@@ -311,7 +311,7 @@ export default function MCPGovernanceView() {
             fontSize: '0.78rem'
           }}>
             {toolOutput ? (
-              <pre style={{ margin: 0, color: '#38bdf8', whiteSpace: 'pre-wrap' }}>
+              <pre style={{ margin: 0, color: 'var(--text-highlight)', whiteSpace: 'pre-wrap' }}>
                 {JSON.stringify(toolOutput, null, 2)}
               </pre>
             ) : (

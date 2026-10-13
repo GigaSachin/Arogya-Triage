@@ -161,19 +161,19 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
           fontSize: '0.7rem',
           fontWeight: '800',
           letterSpacing: '0.06em',
-          color: isRed ? '#ff6b8b' : '#38bdf8',
+          color: isRed ? 'var(--color-red)' : 'var(--text-highlight)',
           textTransform: 'uppercase'
         }}>
-          <Activity size={14} color={isRed ? '#ff2a5f' : '#00f2fe'} />
+          <Activity size={14} color={isRed ? 'var(--color-red)' : 'var(--color-blue)'} />
           <span>LEAD II ECG</span>
         </div>
 
         <div style={{
           flex: 1,
           height: '34px',
-          background: '#050811',
+          background: '#090e1a',
           borderRadius: '8px',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
+          border: '1px solid var(--border-subtle)',
           overflow: 'hidden',
           position: 'relative',
           boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.8)'
@@ -193,7 +193,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>HR:</span>
           <strong style={{ 
-            color: criticalRedCount > 0 ? '#ff4d6d' : '#f8fafc', 
+            color: criticalRedCount > 0 ? 'var(--color-red)' : 'var(--text-primary)', 
             fontFamily: 'var(--font-mono)',
             fontSize: '0.88rem'
           }}>
@@ -206,7 +206,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>SpO2:</span>
           <strong style={{ 
-            color: vitals.spo2 < 92 ? '#ff4d6d' : '#34d399', 
+            color: vitals.spo2 < 92 ? 'var(--color-red)' : 'var(--color-green)', 
             fontFamily: 'var(--font-mono)',
             fontSize: '0.88rem'
           }}>
@@ -218,7 +218,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>BP:</span>
-          <strong style={{ color: '#f8fafc', fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}>
+          <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}>
             {vitals.bp}
           </strong>
         </div>
@@ -227,7 +227,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>Resp:</span>
-          <strong style={{ color: '#f8fafc', fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}>
+          <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontSize: '0.88rem' }}>
             {vitals.rr}/m
           </strong>
         </div>
@@ -240,14 +240,14 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
           alignItems: 'center',
           gap: '0.4rem',
           fontSize: '0.72rem',
-          color: '#6ee7b7',
-          background: 'rgba(16, 185, 129, 0.14)',
+          color: 'var(--color-green)',
+          background: 'var(--color-green-bg)',
           padding: '0.25rem 0.65rem',
           borderRadius: '9999px',
-          border: '1px solid rgba(16, 185, 129, 0.4)',
-          boxShadow: '0 0 10px rgba(16, 185, 129, 0.2)'
+          border: '1px solid var(--color-green-border)',
+          boxShadow: 'var(--shadow-sm)'
         }}>
-          <Wifi size={12} color="#34d399" />
+          <Wifi size={12} color="var(--color-green)" />
           <span>Odisha Telemetry Active</span>
         </div>
 
@@ -255,9 +255,9 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
           onClick={handleAudioToggle}
           title={isMuted ? "Enable subtle clinical sound effects" : "Mute clinical sound effects"}
           style={{
-            background: isMuted ? 'rgba(15, 23, 42, 0.65)' : 'rgba(56, 189, 248, 0.15)',
-            border: isMuted ? '1px solid var(--border-subtle)' : '1px solid rgba(56, 189, 248, 0.45)',
-            color: isMuted ? 'var(--text-muted)' : '#38bdf8',
+            background: isMuted ? 'var(--bg-surface-elevated)' : 'var(--color-blue-bg)',
+            border: isMuted ? '1px solid var(--border-subtle)' : '1px solid var(--color-blue-border)',
+            color: isMuted ? 'var(--text-muted)' : 'var(--text-highlight)',
             borderRadius: '8px',
             padding: '0.35rem 0.75rem',
             cursor: 'pointer',
@@ -267,7 +267,7 @@ export default function ECGMonitor({ criticalRedCount = 0 }) {
             fontSize: '0.74rem',
             fontWeight: '700',
             transition: 'all 0.2s ease',
-            boxShadow: isMuted ? 'none' : '0 0 12px rgba(56, 189, 248, 0.25)'
+            boxShadow: isMuted ? 'none' : '0 0 12px var(--color-blue-glow)'
           }}
         >
           {isMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}

@@ -387,7 +387,7 @@ export default function VeterinaryIntakeKiosk({
                 <HeartPulse size={18} color="#ffffff" />
               </div>
               <div>
-                <h2 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#ffffff' }}>
+                <h2 style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--text-primary)' }}>
                   Veterinary Emergency & Livestock Triage Node
                 </h2>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -396,7 +396,7 @@ export default function VeterinaryIntakeKiosk({
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#86efac', fontSize: '0.75rem', fontWeight: '600' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-green)', fontSize: '0.75rem', fontWeight: '600' }}>
               <ShieldCheck size={16} />
               <span>Owner Phone In-Flight Masking Active</span>
             </div>
@@ -404,10 +404,10 @@ export default function VeterinaryIntakeKiosk({
 
           {/* Human Field Examination Protocol Banner */}
           <div style={{
-            background: 'rgba(5, 150, 105, 0.08)',
+            background: 'var(--color-green-bg)',
             borderRadius: '8px',
             padding: '0.65rem 0.85rem',
-            border: '1px solid rgba(5, 150, 105, 0.25)',
+            border: '1px solid var(--color-green-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -415,8 +415,8 @@ export default function VeterinaryIntakeKiosk({
             gap: '0.5rem'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981' }}></span>
-              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#86efac' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--color-green)' }}></span>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--color-green)' }}>
                 Field Paravet & Veterinary Officer Intake Console
               </span>
             </div>
@@ -831,7 +831,7 @@ export default function VeterinaryIntakeKiosk({
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Veterinary Triage Index (VTI)
                   </div>
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#ffffff' }}>
+                  <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)' }}>
                     {submissionResult.animal_tag_or_name || `${submissionResult.species?.toUpperCase()} Record`}
                   </h3>
                 </div>
@@ -842,27 +842,27 @@ export default function VeterinaryIntakeKiosk({
               </div>
 
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Case Record ID: <strong style={{ color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>{submissionResult.record_id}</strong> • Species: <strong style={{ textTransform: 'capitalize' }}>{submissionResult.species}</strong>
+                Case Record ID: <strong style={{ color: 'var(--text-highlight)', fontFamily: 'var(--font-mono)' }}>{submissionResult.record_id}</strong> • Species: <strong style={{ textTransform: 'capitalize' }}>{submissionResult.species}</strong>
               </div>
             </div>
 
             {/* Critical Emergency Banner if Red */}
             {(submissionResult.urgency_code === 'RED' || submissionResult.urgency_category === 'CRITICAL') && (
               <div style={{
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid #ef4444',
+                background: 'var(--color-red-bg)',
+                border: '1px solid var(--color-red-border)',
                 borderRadius: '8px',
                 padding: '0.75rem 1rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.75rem'
               }}>
-                <span className="pulse-beacon-red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }}></span>
+                <span className="pulse-beacon-red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--color-red)', flexShrink: 0 }}></span>
                 <div>
-                  <div style={{ fontSize: '0.82rem', fontWeight: '700', color: '#fca5a5' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: '700', color: 'var(--banner-red-title)' }}>
                     CRITICAL EMERGENCY: Immediate Veterinary Officer Intervention Required
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--banner-red-sub)' }}>
                     High risk of rapid mortality without decompression or immediate hemodynamic stabilization.
                   </div>
                 </div>
@@ -872,20 +872,20 @@ export default function VeterinaryIntakeKiosk({
             {/* Uncertainty Banner if Beta or Unsupported */}
             {submissionResult.is_uncertain && (
               <div style={{
-                background: 'rgba(245, 158, 11, 0.15)',
-                border: '1px solid #f59e0b',
+                background: 'var(--color-yellow-bg)',
+                border: '1px solid var(--color-yellow-border)',
                 borderRadius: '8px',
                 padding: '0.75rem 1rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.75rem'
               }}>
-                <AlertTriangle size={18} color="#fbbf24" style={{ flexShrink: 0 }} />
+                <AlertTriangle size={18} color="var(--color-yellow)" style={{ flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontSize: '0.82rem', fontWeight: '700', color: '#fde68a' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: '700', color: 'var(--banner-yellow-title)' }}>
                     CLINICAL UNCERTAINTY STATE (Non-Guessing Safety Protocol)
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: '#fef3c7' }}>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--banner-yellow-sub)' }}>
                     Algorithmic safety rules recommend direct in-person evaluation by a qualified Veterinary Practitioner rather than automated scoring.
                   </div>
                 </div>
@@ -894,12 +894,12 @@ export default function VeterinaryIntakeKiosk({
 
             {/* Clinical Classification & Reasons */}
             <div style={{
-              background: 'rgba(15, 23, 42, 0.65)',
+              background: 'var(--bg-surface-elevated)',
               borderRadius: '8px',
               padding: '0.85rem 1rem',
               border: '1px solid var(--border-subtle)'
             }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#ffffff', marginBottom: '0.35rem' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
                 {submissionResult.classification}
               </div>
               <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
@@ -912,14 +912,14 @@ export default function VeterinaryIntakeKiosk({
             {/* Immediate Stabilization Actions (NO DRUGS) */}
             {submissionResult.critical_actions && submissionResult.critical_actions.length > 0 && (
               <div>
-                <h4 style={{ fontSize: '0.8rem', fontWeight: '700', color: '#86efac', marginBottom: '0.45rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <h4 style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--color-green)', marginBottom: '0.45rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Immediate Stabilization Actions (Non-Pharmacological):
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                   {submissionResult.critical_actions.map((act, i) => (
                     <div key={i} style={{
-                      background: 'rgba(16, 185, 129, 0.08)',
-                      border: '1px solid rgba(16, 185, 129, 0.25)',
+                      background: 'var(--color-green-bg)',
+                      border: '1px solid var(--color-green-border)',
                       borderRadius: '6px',
                       padding: '0.5rem 0.75rem',
                       fontSize: '0.76rem',
@@ -928,7 +928,7 @@ export default function VeterinaryIntakeKiosk({
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
-                      <CheckCircle2 size={14} color="#86efac" style={{ flexShrink: 0 }} />
+                      <CheckCircle2 size={14} color="var(--color-green)" style={{ flexShrink: 0 }} />
                       <span>{act}</span>
                     </div>
                   ))}
@@ -1012,7 +1012,7 @@ export default function VeterinaryIntakeKiosk({
               <Stethoscope size={24} color="#10b981" />
             </div>
 
-            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#ffffff', marginBottom: '0.4rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
               Awaiting Veterinary Case Intake
             </h3>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', lineHeight: '1.5' }}>
@@ -1020,7 +1020,7 @@ export default function VeterinaryIntakeKiosk({
             </p>
 
             <div style={{
-              background: 'rgba(15, 23, 42, 0.6)',
+              background: 'var(--bg-surface-elevated)',
               borderRadius: '8px',
               padding: '0.85rem',
               textAlign: 'left',
@@ -1028,7 +1028,7 @@ export default function VeterinaryIntakeKiosk({
               border: '1px solid var(--border-subtle)',
               lineHeight: '1.5'
             }}>
-              <div style={{ fontWeight: '700', color: '#86efac', marginBottom: '0.35rem' }}>
+              <div style={{ fontWeight: '700', color: 'var(--color-green)', marginBottom: '0.35rem' }}>
                 🛡️ Operational Guardrails Enforced:
               </div>
               <ul style={{ paddingLeft: '1.2rem', margin: 0, color: 'var(--text-muted)' }}>

@@ -311,12 +311,12 @@ export default function Triage3DCore({
         alignItems: 'center',
         zIndex: 10,
         position: 'relative',
-        background: 'rgba(10, 16, 32, 0.88)',
+        background: 'var(--bg-card)',
         backdropFilter: 'blur(16px)',
         padding: '0.35rem 0.75rem',
         borderRadius: '10px',
         border: '1px solid var(--border-subtle)',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.6)'
+        boxShadow: 'var(--shadow-md)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
           {[
@@ -331,9 +331,9 @@ export default function Triage3DCore({
                 key={mode.id}
                 onClick={() => handleModeChange(mode.id)}
                 style={{
-                  background: isSelected ? 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' : 'rgba(15, 23, 42, 0.5)',
+                  background: isSelected ? 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' : 'var(--bg-surface-elevated)',
                   color: isSelected ? '#ffffff' : 'var(--text-secondary)',
-                  border: isSelected ? '1px solid rgba(56, 189, 248, 0.6)' : '1px solid transparent',
+                  border: isSelected ? '1px solid rgba(56, 189, 248, 0.6)' : '1px solid var(--border-subtle)',
                   padding: '0.2rem 0.6rem',
                   borderRadius: '6px',
                   fontSize: '0.7rem',
@@ -343,10 +343,10 @@ export default function Triage3DCore({
                   alignItems: 'center',
                   gap: '0.3rem',
                   transition: 'all 0.18s ease',
-                  boxShadow: isSelected ? '0 0 10px rgba(0, 242, 254, 0.4)' : 'none'
+                  boxShadow: isSelected ? '0 0 10px rgba(0, 242, 254, 0.3)' : 'none'
                 }}
               >
-                <Icon size={12} color={isSelected ? '#ffffff' : '#38bdf8'} />
+                <Icon size={12} color={isSelected ? '#ffffff' : 'var(--text-highlight)'} />
                 <span>{mode.label}</span>
               </button>
             );
@@ -358,7 +358,7 @@ export default function Triage3DCore({
           style={{
             background: 'none',
             border: 'none',
-            color: '#38bdf8',
+            color: 'var(--text-highlight)',
             fontSize: '0.7rem',
             fontWeight: '600',
             cursor: 'pointer',

@@ -85,7 +85,7 @@ export default function PatientPortal({
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '1.25rem',
-        background: '#ffffff',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border-subtle)',
         boxShadow: 'var(--shadow-card)'
       }}>
@@ -170,17 +170,17 @@ export default function PatientPortal({
                   ESI LEVEL {esiLevel} • {status.label}
                 </span>
                 <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  Est. Wait: <strong style={{ color: '#ffffff' }}>{status.wait}</strong>
+                  Est. Wait: <strong style={{ color: 'var(--text-primary)' }}>{status.wait}</strong>
                 </span>
               </div>
 
-              <div style={{ fontSize: '0.78rem', color: isApproved ? '#86efac' : '#fde68a', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '600' }}>
+              <div style={{ fontSize: '0.78rem', color: isApproved ? 'var(--color-green)' : 'var(--color-yellow)', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '600' }}>
                 {isApproved ? <CheckCircle2 size={16} /> : <Clock size={16} className="pulse-beacon-yellow" />}
                 <span>{isApproved ? 'Physician Approved' : 'Review in Progress'}</span>
               </div>
             </div>
 
-            <div style={{ fontSize: '0.92rem', color: '#f8fafc', fontWeight: '500', marginBottom: '1rem', lineHeight: '1.5' }}>
+            <div style={{ fontSize: '0.92rem', color: 'var(--text-primary)', fontWeight: '500', marginBottom: '1rem', lineHeight: '1.5' }}>
               {status.advice}
             </div>
 
@@ -188,12 +188,12 @@ export default function PatientPortal({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              borderTop: '1px solid var(--border-subtle)',
               paddingTop: '0.85rem',
               fontSize: '0.8rem'
             }}>
               <span style={{ color: 'var(--text-muted)' }}>
-                Attending Physician: <strong style={{ color: '#ffffff' }}>{status.doctor}</strong>
+                Attending Physician: <strong style={{ color: 'var(--text-primary)' }}>{status.doctor}</strong>
               </span>
 
               {activeRecord?.id && (
@@ -222,9 +222,9 @@ export default function PatientPortal({
 
           {/* God-Level Vitals Overview */}
           <div className="glass-card">
-            <div style={{ fontSize: '0.9rem', fontWeight: '700', color: '#ffffff', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <HeartPulse size={18} color="#38bdf8" />
+                <HeartPulse size={18} color="var(--text-highlight)" />
                 <span>Recorded Clinical Vitals</span>
               </div>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Real-Time Ingestion</span>
@@ -233,8 +233,8 @@ export default function PatientPortal({
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
               {/* SpO2 */}
               <div style={{
-                background: 'rgba(8, 12, 22, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
                 borderRadius: '12px',
                 padding: '0.85rem 0.75rem',
                 textAlign: 'center'
@@ -243,20 +243,20 @@ export default function PatientPortal({
                 <div style={{
                   fontSize: '1.45rem',
                   fontWeight: '800',
-                  color: activeRecord?.vitals?.spo2 && activeRecord.vitals.spo2 < 90 ? '#ef4444' : '#10b981',
+                  color: activeRecord?.vitals?.spo2 && activeRecord.vitals.spo2 < 90 ? 'var(--color-red)' : 'var(--color-green)',
                   margin: '0.2rem 0'
                 }}>
                   {activeRecord?.vitals?.spo2 ? `${activeRecord.vitals.spo2}%` : '89%'}
                 </div>
-                <div style={{ fontSize: '0.65rem', color: activeRecord?.vitals?.spo2 && activeRecord.vitals.spo2 < 90 ? '#fca5a5' : '#86efac', fontWeight: '600' }}>
+                <div style={{ fontSize: '0.65rem', color: activeRecord?.vitals?.spo2 && activeRecord.vitals.spo2 < 90 ? 'var(--color-red)' : 'var(--color-green)', fontWeight: '600' }}>
                   {activeRecord?.vitals?.spo2 && activeRecord.vitals.spo2 < 90 ? 'Hypoxemic Alert' : 'Normal'}
                 </div>
               </div>
 
               {/* Pulse */}
               <div style={{
-                background: 'rgba(8, 12, 22, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
                 borderRadius: '12px',
                 padding: '0.85rem 0.75rem',
                 textAlign: 'center'
@@ -265,7 +265,7 @@ export default function PatientPortal({
                 <div style={{
                   fontSize: '1.45rem',
                   fontWeight: '800',
-                  color: activeRecord?.vitals?.pulse && (activeRecord.vitals.pulse > 100 || activeRecord.vitals.pulse < 55) ? '#f59e0b' : '#ffffff',
+                  color: activeRecord?.vitals?.pulse && (activeRecord.vitals.pulse > 100 || activeRecord.vitals.pulse < 55) ? 'var(--color-yellow)' : 'var(--text-primary)',
                   margin: '0.2rem 0'
                 }}>
                   {activeRecord?.vitals?.pulse ? `${activeRecord.vitals.pulse}` : '128'}
@@ -278,8 +278,8 @@ export default function PatientPortal({
 
               {/* BP */}
               <div style={{
-                background: 'rgba(8, 12, 22, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
                 borderRadius: '12px',
                 padding: '0.85rem 0.75rem',
                 textAlign: 'center'
@@ -288,7 +288,7 @@ export default function PatientPortal({
                 <div style={{
                   fontSize: '1.45rem',
                   fontWeight: '800',
-                  color: '#ffffff',
+                  color: 'var(--text-primary)',
                   margin: '0.2rem 0'
                 }}>
                   {activeRecord?.vitals?.systolic_bp ? `${activeRecord.vitals.systolic_bp}/${activeRecord?.vitals?.diastolic_bp || 60}` : '88/60'}
@@ -300,8 +300,8 @@ export default function PatientPortal({
 
               {/* Temp */}
               <div style={{
-                background: 'rgba(8, 12, 22, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--border-subtle)',
                 borderRadius: '12px',
                 padding: '0.85rem 0.75rem',
                 textAlign: 'center'
@@ -310,13 +310,13 @@ export default function PatientPortal({
                 <div style={{
                   fontSize: '1.45rem',
                   fontWeight: '800',
-                  color: activeRecord?.vitals?.temperature && activeRecord.vitals.temperature > 100.4 ? '#f59e0b' : '#ffffff',
+                  color: activeRecord?.vitals?.temperature && activeRecord.vitals.temperature > 100.4 ? 'var(--color-yellow)' : 'var(--text-primary)',
                   margin: '0.2rem 0'
                 }}>
                   {activeRecord?.vitals?.temperature ? `${activeRecord.vitals.temperature}°` : '102.4°'}
                   <span style={{ fontSize: '0.75rem', fontWeight: '500', color: 'var(--text-muted)' }}>F</span>
                 </div>
-                <div style={{ fontSize: '0.65rem', color: activeRecord?.vitals?.temperature && activeRecord.vitals.temperature > 100.4 ? '#fde68a' : '#86efac', fontWeight: '600' }}>
+                <div style={{ fontSize: '0.65rem', color: activeRecord?.vitals?.temperature && activeRecord.vitals.temperature > 100.4 ? 'var(--color-yellow)' : 'var(--color-green)', fontWeight: '600' }}>
                   {activeRecord?.vitals?.temperature && activeRecord.vitals.temperature > 100.4 ? 'Febrile' : 'Normal'}
                 </div>
               </div>
@@ -357,8 +357,8 @@ export default function PatientPortal({
           {/* Quick Feeling Worse Notifier */}
           <div className="glass-card">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', fontWeight: '700', color: '#ffffff' }}>
-                <Heart size={16} color="#ef4444" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+                <Heart size={16} color="var(--color-red)" />
                 <span>Feeling Worse or Have New Symptoms?</span>
               </div>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Nurse Call Bell</span>
@@ -510,19 +510,19 @@ export default function PatientPortal({
 
           {/* Hospital Emergency Contacts */}
           <div className="glass-card" style={{ fontSize: '0.82rem' }}>
-            <div style={{ fontWeight: '700', color: '#ffffff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Building2 size={16} color="#38bdf8" />
+            <div style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <Building2 size={16} color="var(--text-highlight)" />
               <span>Facility & Emergency Desk</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', color: 'var(--text-secondary)' }}>
               <div>RGH Panposh Road, Rourkela, Sundargarh - 769004</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#86efac' }}>
-                <Phone size={14} color="#10b981" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-green)' }}>
+                <Phone size={14} color="var(--color-green)" />
                 <span>Triage Desk: <strong>+91-661-2500108</strong></span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#fca5a5' }}>
-                <Phone size={14} color="#ef4444" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-red)' }}>
+                <Phone size={14} color="var(--color-red)" />
                 <span>Govt Ambulance: <strong>108</strong></span>
               </div>
             </div>

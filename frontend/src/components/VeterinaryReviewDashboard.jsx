@@ -58,10 +58,10 @@ export default function VeterinaryReviewDashboard({
           }}>
             <span className="pulse-beacon-red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }}></span>
             <div>
-              <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#fca5a5' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--banner-red-title)' }}>
                 CRITICAL VETERINARY EMERGENCY: {redCount} RED Animal Case(s)
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--banner-red-sub)' }}>
                 Severe bloat / respiratory distress / hemorrhagic enteritis requiring immediate veterinary triage.
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function VeterinaryReviewDashboard({
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
                     <span>{item.facility || item.district}</span>
-                    <span style={{ color: item.status === 'APPROVED' ? '#86efac' : (item.status === 'OVERRIDDEN' ? '#fde68a' : 'inherit') }}>
+                    <span style={{ fontWeight: '700', color: item.status === 'APPROVED' ? 'var(--color-green)' : (item.status === 'OVERRIDDEN' ? 'var(--color-yellow)' : 'var(--text-muted)') }}>
                       {item.status}
                     </span>
                   </div>
@@ -277,7 +277,7 @@ export default function VeterinaryReviewDashboard({
               padding: '0.85rem 1.25rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: selectedRecord.urgency_code === 'RED' ? '#fca5a5' : (selectedRecord.urgency_code === 'YELLOW' ? '#fde68a' : '#86efac') }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: selectedRecord.urgency_code === 'RED' ? 'var(--color-red)' : (selectedRecord.urgency_code === 'YELLOW' ? 'var(--color-yellow)' : 'var(--color-green)') }}>
                   {selectedRecord.classification}
                 </span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -295,9 +295,9 @@ export default function VeterinaryReviewDashboard({
                 1. Species Physiological Vitals Matrix
               </h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.65rem' }}>
-                <div style={{ background: '#f8fafc', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Rectal Temp</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.temperature) >= 103.5 ? '#dc2626' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.temperature) >= 103.5 ? 'var(--color-red)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals?.temperature ? `${selectedRecord.vitals.temperature}°F` : 'N/A'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>
@@ -305,9 +305,9 @@ export default function VeterinaryReviewDashboard({
                   </div>
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Heart / Pulse</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.heart_rate) >= 100 ? '#dc2626' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.heart_rate) >= 100 ? 'var(--color-red)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals?.heart_rate ? `${selectedRecord.vitals.heart_rate} bpm` : 'N/A'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>
@@ -315,9 +315,9 @@ export default function VeterinaryReviewDashboard({
                   </div>
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Respiration</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.respiration_rate) >= 45 ? '#dc2626' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.respiration_rate) >= 45 ? 'var(--color-red)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals?.respiration_rate ? `${selectedRecord.vitals.respiration_rate} bpm` : 'N/A'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>
@@ -325,23 +325,23 @@ export default function VeterinaryReviewDashboard({
                   </div>
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Mucous Membrane</div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: '700', textTransform: 'capitalize', color: selectedRecord.vitals?.mucous_membrane_color === 'cyanotic' ? '#0284c7' : (selectedRecord.vitals?.mucous_membrane_color === 'pale' ? '#dc2626' : '#059669') }}>
+                  <div style={{ fontSize: '0.95rem', fontWeight: '700', textTransform: 'capitalize', color: selectedRecord.vitals?.mucous_membrane_color === 'cyanotic' ? 'var(--text-highlight)' : (selectedRecord.vitals?.mucous_membrane_color === 'pale' ? 'var(--color-red)' : 'var(--color-green)') }}>
                     {selectedRecord.vitals?.mucous_membrane_color || 'N/A'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Coloration</div>
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>CRT</div>
-                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.crt_sec) > 2.0 ? '#dc2626' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontSize: '1.15rem', fontWeight: '700', color: Number(selectedRecord.vitals?.crt_sec) > 2.0 ? 'var(--color-red)' : 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {selectedRecord.vitals?.crt_sec ? `${selectedRecord.vitals.crt_sec}s` : 'N/A'}
                   </div>
                   <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Norm &lt;= 2.0s</div>
                 </div>
 
-                <div style={{ background: '#f8fafc', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.65rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
                   <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Hydration</div>
                   <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-primary)', textTransform: 'capitalize' }}>
                     {selectedRecord.vitals?.hydration_status || 'Normal'}
@@ -356,7 +356,7 @@ export default function VeterinaryReviewDashboard({
               <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 2. Presenting Complaints & Chronology
               </h4>
-              <div style={{ background: '#f8fafc', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', fontSize: '0.82rem', lineHeight: '1.5', color: 'var(--text-primary)' }}>
+              <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', fontSize: '0.82rem', lineHeight: '1.5', color: 'var(--text-primary)' }}>
                 {selectedRecord.symptoms_raw}
               </div>
             </div>
@@ -364,14 +364,14 @@ export default function VeterinaryReviewDashboard({
             {/* Immediate Stabilization Actions (NO DRUGS) */}
             {selectedRecord.critical_actions && selectedRecord.critical_actions.length > 0 && (
               <div>
-                <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: '#059669', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--color-green)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   3. Immediate Field Stabilization Directives (Non-Pharmacological)
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {selectedRecord.critical_actions.map((act, i) => (
                     <div key={i} style={{
-                      background: '#ecfdf5',
-                      border: '1px solid #a7f3d0',
+                      background: 'var(--color-green-bg)',
+                      border: '1px solid var(--color-green-border)',
                       borderRadius: '6px',
                       padding: '0.55rem 0.85rem',
                       fontSize: '0.78rem',
@@ -380,7 +380,7 @@ export default function VeterinaryReviewDashboard({
                       gap: '0.5rem',
                       color: 'var(--text-primary)'
                     }}>
-                      <CheckCircle2 size={15} color="#059669" style={{ flexShrink: 0 }} />
+                      <CheckCircle2 size={15} color="var(--color-green)" style={{ flexShrink: 0 }} />
                       <span>{act}</span>
                     </div>
                   ))}
@@ -391,20 +391,20 @@ export default function VeterinaryReviewDashboard({
             {/* Diagnostic Blind Spots / Missing Info */}
             {selectedRecord.missing_info && selectedRecord.missing_info.length > 0 && (
               <div>
-                <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: '#d97706', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--color-yellow)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   4. Diagnostic Blind Spots & Information Gaps
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {selectedRecord.missing_info.map((gap, i) => (
                     <div key={i} style={{
-                      background: '#fffbeb',
-                      border: '1px solid #fde68a',
+                      background: 'var(--color-yellow-bg)',
+                      border: '1px solid var(--color-yellow-border)',
                       borderRadius: '6px',
-                      padding: '0.5rem 0.85rem',
+                      padding: '0.55rem 0.85rem',
                       fontSize: '0.76rem',
                       color: 'var(--text-secondary)'
                     }}>
-                      <strong style={{ color: '#b45309' }}>{gap.title || gap.field}:</strong> {gap.reason}
+                      <strong style={{ color: 'var(--color-yellow)' }}>{gap.title || gap.field}:</strong> {gap.reason}
                     </div>
                   ))}
                 </div>
@@ -413,7 +413,7 @@ export default function VeterinaryReviewDashboard({
 
             {/* Disclaimer Footer */}
             <div style={{
-              background: '#f8fafc',
+              background: 'var(--bg-surface-elevated)',
               borderRadius: '6px',
               border: '1px solid var(--border-subtle)',
               padding: '0.65rem 0.85rem',

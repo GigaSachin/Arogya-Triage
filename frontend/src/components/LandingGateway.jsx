@@ -190,15 +190,15 @@ export default function LandingGateway({
             fontWeight: '700',
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
-            color: '#38bdf8',
+            color: 'var(--text-highlight)',
             marginBottom: '1rem',
-            background: 'rgba(56, 189, 248, 0.12)',
+            background: 'var(--color-blue-bg)',
             padding: '0.3rem 0.85rem',
             borderRadius: '9999px',
-            border: '1px solid rgba(56, 189, 248, 0.35)',
-            boxShadow: '0 0 12px rgba(56, 189, 248, 0.2)'
+            border: '1px solid var(--color-blue-border)',
+            boxShadow: '0 0 12px var(--color-blue-glow)'
           }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00f2fe', boxShadow: '0 0 8px #00f2fe' }}></span>
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--color-blue)', boxShadow: '0 0 8px var(--color-blue)' }}></span>
             <span>Deterministic Clinical Decision Support • Bharat V2.5</span>
           </div>
 
@@ -207,10 +207,10 @@ export default function LandingGateway({
             fontWeight: '900',
             letterSpacing: '-0.03em',
             lineHeight: '1.12',
-            background: 'linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%)',
+            background: 'var(--title-gradient)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 35px rgba(56, 189, 248, 0.25)',
+            textShadow: 'var(--title-shadow)',
             marginBottom: '1rem'
           }}>
             AROGYA-TRIAGE
@@ -231,15 +231,15 @@ export default function LandingGateway({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '1.25rem',
-            background: 'rgba(15, 23, 42, 0.75)',
+            background: 'var(--telemetry-pill-bg)',
             padding: '0.55rem 1.25rem',
             borderRadius: '12px',
-            border: '1px solid var(--border-subtle)',
-            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5)',
+            border: '1px solid var(--telemetry-pill-border)',
+            boxShadow: 'var(--shadow-sm)',
             flexWrap: 'wrap'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00f2fe', boxShadow: '0 0 6px #00f2fe' }}></span>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-blue)', boxShadow: '0 0 6px var(--color-blue)' }}></span>
               <span style={{ color: 'var(--text-muted)' }}>Human Active:</span>
               <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{humanCount ?? 3}</strong>
             </div>
@@ -247,7 +247,7 @@ export default function LandingGateway({
             <div style={{ width: '1px', height: '14px', background: 'var(--border-subtle)' }}></div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }}></span>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-green)', boxShadow: '0 0 6px var(--color-green)' }}></span>
               <span style={{ color: 'var(--text-muted)' }}>Veterinary Cases:</span>
               <strong style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{vetCount ?? 4}</strong>
             </div>
@@ -255,8 +255,8 @@ export default function LandingGateway({
             {criticalRedCount > 0 && (
               <>
                 <div style={{ width: '1px', height: '14px', background: 'var(--border-subtle)' }}></div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: '#ff6b8b' }}>
-                  <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff2a5f' }}></span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', color: 'var(--color-red)' }}>
+                  <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-red)' }}></span>
                   <strong style={{ fontFamily: 'var(--font-mono)' }}>{criticalRedCount} Emergent</strong>
                 </div>
               </>
@@ -677,8 +677,8 @@ export default function LandingGateway({
                 'Degraded Hospital Lab Slip Tabular OCR Extraction',
                 'In-Flight PII Masking (Aadhaar & Mobile) & 1-Click ABDM PDF'
               ].map((feat, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.78rem', color: '#cbd5e1' }}>
-                  <CheckCircle2 size={15} color="#38bdf8" style={{ flexShrink: 0 }} />
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
+                  <CheckCircle2 size={15} color="var(--text-highlight)" style={{ flexShrink: 0 }} />
                   <span>{feat}</span>
                 </div>
               ))}
@@ -691,12 +691,12 @@ export default function LandingGateway({
               gap: '0.5rem', 
               marginBottom: '1.5rem', 
               padding: '0.45rem 0.85rem', 
-              background: 'rgba(37, 99, 235, 0.12)', 
+              background: 'var(--color-blue-bg)', 
               borderRadius: '9px', 
-              border: '1px solid rgba(56, 189, 248, 0.3)' 
+              border: '1px solid var(--color-blue-border)' 
             }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 6px #38bdf8' }}></span>
-              <span style={{ fontSize: '0.74rem', color: '#7dd3fc', fontWeight: '700' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-blue)', boxShadow: '0 0 6px var(--color-blue)' }}></span>
+              <span style={{ fontSize: '0.74rem', color: 'var(--text-highlight)', fontWeight: '700' }}>
                 Human-in-the-Loop • Doctor Review & Signature Required
               </span>
             </div>
@@ -783,8 +783,8 @@ export default function LandingGateway({
                 'Transparent Non-Guessing Uncertainty for Rare/Beta Species',
                 'DAH&VS Clinical Transfer Referral Note (Printable PDF)'
               ].map((feat, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.78rem', color: '#cbd5e1' }}>
-                  <CheckCircle2 size={15} color="#34d399" style={{ flexShrink: 0 }} />
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
+                  <CheckCircle2 size={15} color="var(--color-green)" style={{ flexShrink: 0 }} />
                   <span>{feat}</span>
                 </div>
               ))}
@@ -797,12 +797,12 @@ export default function LandingGateway({
               gap: '0.5rem', 
               marginBottom: '1.5rem', 
               padding: '0.45rem 0.85rem', 
-              background: 'rgba(16, 185, 129, 0.12)', 
+              background: 'var(--color-green-bg)', 
               borderRadius: '9px', 
-              border: '1px solid rgba(16, 185, 129, 0.3)' 
+              border: '1px solid var(--color-green-border)' 
             }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }}></span>
-              <span style={{ fontSize: '0.74rem', color: '#6ee7b7', fontWeight: '700' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-green)', boxShadow: '0 0 6px var(--color-green)' }}></span>
+              <span style={{ fontSize: '0.74rem', color: 'var(--color-green)', fontWeight: '700' }}>
                 Field Examination • Veterinary Officer Sign-off & Transfer
               </span>
             </div>
@@ -881,13 +881,13 @@ export default function LandingGateway({
             style={{ 
               fontSize: '0.72rem', 
               padding: '0.4rem 0.75rem', 
-              border: '1px solid rgba(255, 42, 95, 0.45)', 
-              color: '#ff6b8b', 
-              background: 'rgba(255, 42, 95, 0.1)' 
+              border: '1px solid var(--color-red-border)', 
+              color: 'var(--color-red)', 
+              background: 'var(--color-red-bg)' 
             }}
             onClick={() => handleScenarioClick('TC-01')}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ff2a5f', display: 'inline-block' }}></span>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-red)', display: 'inline-block' }}></span>
             TC-01 (Red Sepsis • Odia)
           </motion.button>
 
@@ -898,13 +898,13 @@ export default function LandingGateway({
             style={{ 
               fontSize: '0.72rem', 
               padding: '0.4rem 0.75rem', 
-              border: '1px solid rgba(251, 191, 36, 0.45)', 
-              color: '#fde68a', 
-              background: 'rgba(251, 191, 36, 0.1)' 
+              border: '1px solid var(--color-yellow-border)', 
+              color: 'var(--color-yellow)', 
+              background: 'var(--color-yellow-bg)' 
             }}
             onClick={() => handleScenarioClick('TC-02')}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fbbf24', display: 'inline-block' }}></span>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-yellow)', display: 'inline-block' }}></span>
             TC-02 (Yellow Dengue • Hindi)
           </motion.button>
 
@@ -915,13 +915,13 @@ export default function LandingGateway({
             style={{ 
               fontSize: '0.72rem', 
               padding: '0.4rem 0.75rem', 
-              border: '1px solid rgba(16, 185, 129, 0.45)', 
-              color: '#6ee7b7', 
-              background: 'rgba(16, 185, 129, 0.1)' 
+              border: '1px solid var(--color-green-border)', 
+              color: 'var(--color-green)', 
+              background: 'var(--color-green-bg)' 
             }}
             onClick={() => handleScenarioClick('TC-03')}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-green)', display: 'inline-block' }}></span>
             TC-03 (Green OPD • English)
           </motion.button>
 
@@ -932,13 +932,13 @@ export default function LandingGateway({
             style={{ 
               fontSize: '0.72rem', 
               padding: '0.4rem 0.75rem', 
-              border: '1px solid rgba(56, 189, 248, 0.45)', 
-              color: '#7dd3fc', 
-              background: 'rgba(56, 189, 248, 0.1)' 
+              border: '1px solid var(--color-blue-border)', 
+              color: 'var(--text-highlight)', 
+              background: 'var(--color-blue-bg)' 
             }}
             onClick={() => handleScenarioClick('VET-01')}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8', display: 'inline-block' }}></span>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-blue)', display: 'inline-block' }}></span>
             VET-01 (Cattle Bloat • Critical)
           </motion.button>
         </div>

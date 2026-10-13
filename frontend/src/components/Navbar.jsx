@@ -169,14 +169,18 @@ export default function Navbar({
                       bottom: 0,
                       borderRadius: '9px',
                       background: item.id.includes('vet') 
-                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.15) 100%)' 
-                        : 'linear-gradient(135deg, rgba(0, 242, 254, 0.28) 0%, rgba(37, 99, 235, 0.2) 100%)',
+                        ? (theme === 'dark' 
+                            ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.15) 100%)' 
+                            : 'linear-gradient(135deg, #059669 0%, #047857 100%)')
+                        : (theme === 'dark' 
+                            ? 'linear-gradient(135deg, rgba(0, 242, 254, 0.28) 0%, rgba(37, 99, 235, 0.2) 100%)' 
+                            : 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)'),
                       border: item.id.includes('vet') 
-                        ? '1px solid rgba(16, 185, 129, 0.6)' 
-                        : '1px solid rgba(0, 242, 254, 0.65)',
+                        ? (theme === 'dark' ? '1px solid rgba(16, 185, 129, 0.6)' : '1px solid #059669')
+                        : (theme === 'dark' ? '1px solid rgba(0, 242, 254, 0.65)' : '1px solid #0284c7'),
                       boxShadow: item.id.includes('vet') 
-                        ? '0 0 16px rgba(16, 185, 129, 0.4)' 
-                        : '0 0 18px rgba(0, 242, 254, 0.45)',
+                        ? (theme === 'dark' ? '0 0 16px rgba(16, 185, 129, 0.4)' : '0 2px 8px rgba(5, 150, 105, 0.3)')
+                        : (theme === 'dark' ? '0 0 18px rgba(0, 242, 254, 0.45)' : '0 2px 8px rgba(37, 99, 235, 0.3)'),
                       zIndex: -1
                     }}
                   />
@@ -184,20 +188,20 @@ export default function Navbar({
 
                 <Icon 
                   size={14} 
-                  color={isActive ? (item.id.includes('vet') ? '#34d399' : '#00f2fe') : 'currentColor'} 
+                  color={isActive ? (theme === 'dark' ? (item.id.includes('vet') ? '#34d399' : '#00f2fe') : '#ffffff') : 'currentColor'} 
                 />
                 <span>{item.label}</span>
 
                 {item.badge > 0 && (
                   <span style={{
-                    background: item.isRed ? '#ff2a5f' : '#334155',
+                    background: item.isRed ? 'var(--color-red)' : '#334155',
                     color: '#ffffff',
                     fontSize: '0.65rem',
                     fontWeight: '800',
                     padding: '0.1rem 0.45rem',
                     borderRadius: '9999px',
                     marginLeft: '0.2rem',
-                    boxShadow: item.isRed ? '0 0 10px rgba(255, 42, 95, 0.7)' : 'none'
+                    boxShadow: item.isRed ? '0 0 10px var(--color-red-glow)' : 'none'
                   }}>
                     {item.badge}
                   </span>
@@ -219,16 +223,16 @@ export default function Navbar({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.45rem',
-                background: 'rgba(255, 42, 95, 0.18)',
-                border: '1px solid rgba(255, 42, 95, 0.6)',
+                background: 'var(--color-red-bg)',
+                border: '1px solid var(--color-red-border)',
                 borderRadius: '8px',
                 padding: '0.3rem 0.65rem',
                 cursor: 'pointer',
-                boxShadow: '0 0 14px rgba(255, 42, 95, 0.4)'
+                boxShadow: '0 0 14px var(--color-red-glow)'
               }}
             >
-              <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff2a5f' }}></span>
-              <span style={{ fontSize: '0.72rem', color: '#ff6b8b', fontWeight: '800' }}>
+              <span className="pulse-beacon-red" style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-red)' }}></span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--color-red)', fontWeight: '800' }}>
                 {criticalRedCount} CRITICAL RED
               </span>
             </motion.div>

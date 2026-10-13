@@ -47,14 +47,14 @@ export default function SurveillanceDashboard() {
       
       {/* Top Banner: BigQuery Connection & Surveillance Totals */}
       <div className="glass-card" style={{
-        background: 'linear-gradient(135deg, rgba(17, 26, 46, 0.9), rgba(15, 23, 42, 0.9))',
-        border: '1px solid rgba(59, 130, 246, 0.3)'
+        background: 'var(--color-blue-bg)',
+        border: '1px solid var(--color-blue-border)'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem' }}>
-              <Database size={22} color="#38bdf8" />
-              <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#ffffff' }}>
+              <Database size={22} color="var(--text-highlight)" />
+              <h2 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-primary)' }}>
                 District Syndromic Telemetry & BigQuery Live Stream
               </h2>
               <span className="badge badge-blue" style={{ fontSize: '0.7rem' }}>
@@ -62,30 +62,30 @@ export default function SurveillanceDashboard() {
               </span>
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Target Dataset: <code style={{ color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>{telemetryData?.bigquery_target}</code>
+              Target Dataset: <code style={{ color: 'var(--text-highlight)', fontFamily: 'var(--font-mono)' }}>{telemetryData?.bigquery_target}</code>
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Ingested Events</div>
-              <div style={{ fontSize: '1.35rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                 {telemetryData?.total_ingested_events?.toLocaleString()}
               </div>
             </div>
             <div style={{ height: '36px', width: '1px', background: 'var(--border-subtle)' }}></div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', borderRadius: '8px', padding: '0.4rem 0.75rem', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.65rem', color: '#fca5a5' }}>RED CASES</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#ef4444' }}>{telemetryData?.aggregate_counts?.red_emergent}</div>
+              <div style={{ background: 'var(--color-red-bg)', border: '1px solid var(--color-red-border)', borderRadius: '8px', padding: '0.4rem 0.75rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.65rem', color: 'var(--color-red)', fontWeight: '600' }}>RED CASES</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-red)' }}>{telemetryData?.aggregate_counts?.red_emergent}</div>
               </div>
-              <div style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '8px', padding: '0.4rem 0.75rem', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.65rem', color: '#fde68a' }}>YELLOW</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#f59e0b' }}>{telemetryData?.aggregate_counts?.yellow_urgent}</div>
+              <div style={{ background: 'var(--color-yellow-bg)', border: '1px solid var(--color-yellow-border)', borderRadius: '8px', padding: '0.4rem 0.75rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.65rem', color: 'var(--color-yellow)', fontWeight: '600' }}>YELLOW</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-yellow)' }}>{telemetryData?.aggregate_counts?.yellow_urgent}</div>
               </div>
-              <div style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '8px', padding: '0.4rem 0.75rem', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.65rem', color: '#86efac' }}>GREEN</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#10b981' }}>{telemetryData?.aggregate_counts?.green_non_urgent}</div>
+              <div style={{ background: 'var(--color-green-bg)', border: '1px solid var(--color-green-border)', borderRadius: '8px', padding: '0.4rem 0.75rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.65rem', color: 'var(--color-green)', fontWeight: '600' }}>GREEN</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--color-green)' }}>{telemetryData?.aggregate_counts?.green_non_urgent}</div>
               </div>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function SurveillanceDashboard() {
         <div className="glass-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <MapPin size={18} color="#f59e0b" />
-            <h3 style={{ fontSize: '1rem', fontWeight: '700' }}>Odisha Surveillance Jurisdictions</h3>
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)' }}>Odisha Surveillance Jurisdictions</h3>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -113,8 +113,8 @@ export default function SurveillanceDashboard() {
                   style={{
                     padding: '0.75rem 1rem',
                     borderRadius: '8px',
-                    background: isSelected ? '#1e293b' : '#0c1220',
-                    border: isSelected ? '1.5px solid #38bdf8' : '1px solid var(--border-subtle)',
+                    background: isSelected ? 'var(--nav-pill-bg-human)' : 'var(--bg-surface-elevated)',
+                    border: isSelected ? '1.5px solid var(--border-focus)' : '1px solid var(--border-subtle)',
                     cursor: 'pointer',
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -123,10 +123,10 @@ export default function SurveillanceDashboard() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#ffffff' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: '700', color: isSelected ? '#ffffff' : 'var(--text-primary)' }}>
                       {dist}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    <div style={{ fontSize: '0.72rem', color: isSelected ? 'rgba(255, 255, 255, 0.85)' : 'var(--text-muted)' }}>
                       Febrile: {dData.febrile_cluster} • Thrombocytopenia: {dData.thrombocytopenia_cluster}
                     </div>
                   </div>
@@ -148,7 +148,7 @@ export default function SurveillanceDashboard() {
         <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: '#ffffff' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-primary)' }}>
                 {activeDistrict} — Syndromic Cluster Monitoring
               </h3>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -164,12 +164,12 @@ export default function SurveillanceDashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
             
             {/* Cluster 1: Febrile Illness */}
-            <div style={{ background: '#0c1220', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '10px', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#f59e0b', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--color-yellow-border)', borderRadius: '10px', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-yellow)', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
                 <Flame size={15} />
                 <span>ACUTE FEBRILE CLUSTER</span>
               </div>
-              <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                 {currentDistrictStats.febrile_cluster}
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
@@ -178,26 +178,26 @@ export default function SurveillanceDashboard() {
             </div>
 
             {/* Cluster 2: Thrombocytopenia / Hemorrhagic */}
-            <div style={{ background: '#0c1220', border: '1px solid rgba(239, 68, 68, 0.4)', borderRadius: '10px', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#ef4444', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--color-red-border)', borderRadius: '10px', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-red)', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
                 <ShieldAlert size={15} />
                 <span>THROMBOCYTOPENIA / BLEED</span>
               </div>
-              <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#ef4444', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--color-red)', fontFamily: 'var(--font-mono)' }}>
                 {currentDistrictStats.thrombocytopenia_cluster}
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#fca5a5', marginTop: '0.3rem' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--color-red)', marginTop: '0.3rem' }}>
                 Platelets &lt; 50,000 / Mucosal bleeding (Dengue signal)
               </div>
             </div>
 
             {/* Cluster 3: Respiratory Distress */}
-            <div style={{ background: '#0c1220', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '10px', padding: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#38bdf8', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
+            <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--color-blue-border)', borderRadius: '10px', padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-highlight)', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
                 <Activity size={15} />
                 <span>RESPIRATORY DISTRESS</span>
               </div>
-              <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                 {currentDistrictStats.respiratory_cluster}
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
@@ -208,7 +208,7 @@ export default function SurveillanceDashboard() {
           </div>
 
           {/* District Triage Breakdown Bar */}
-          <div style={{ background: '#0c1220', padding: '1rem', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ background: 'var(--bg-surface-elevated)', padding: '1rem', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
             <div style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Acuity Stratification Ratio ({activeDistrict})
             </div>

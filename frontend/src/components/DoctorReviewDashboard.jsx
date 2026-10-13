@@ -56,10 +56,10 @@ export default function DoctorReviewDashboard({
           }}>
             <span className="pulse-beacon-red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }}></span>
             <div>
-              <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#fca5a5' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--banner-red-title)' }}>
                 CRITICAL EMERGENCY ALERT: {redCount} RED Case(s)
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--banner-red-sub)' }}>
                 Severe hemodynamic instability or critical thrombocytopenia. Immediate triage action required.
               </div>
             </div>
@@ -170,8 +170,8 @@ export default function DoctorReviewDashboard({
                     </div>
                     <span style={{
                       fontSize: '0.7rem',
-                      fontWeight: '600',
-                      color: item.status === 'APPROVED' ? '#86efac' : (item.status === 'OVERRIDDEN' ? '#fde68a' : 'var(--text-muted)')
+                      fontWeight: '700',
+                      color: item.status === 'APPROVED' ? 'var(--color-green)' : (item.status === 'OVERRIDDEN' ? 'var(--color-yellow)' : 'var(--text-muted)')
                     }}>
                       {item.status.replace('_', ' ')}
                     </span>
@@ -323,7 +323,7 @@ export default function DoctorReviewDashboard({
               padding: '0.85rem 1.25rem'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: selectedRecord.urgency_code === 'RED' ? '#fca5a5' : (selectedRecord.urgency_code === 'YELLOW' ? '#fde68a' : '#86efac') }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: selectedRecord.urgency_code === 'RED' ? 'var(--color-red)' : (selectedRecord.urgency_code === 'YELLOW' ? 'var(--color-yellow)' : 'var(--color-green)') }}>
                   {selectedRecord.classification}
                 </span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -516,8 +516,8 @@ export default function DoctorReviewDashboard({
 
             {/* Automated Doctor Inquiries & Missing Information Blindspots (PRD FR-3.2) */}
             <div>
-              <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: '#38bdf8', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <AlertTriangle size={15} color="#38bdf8" />
+              <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-highlight)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <AlertTriangle size={15} color="var(--text-highlight)" />
                 4. Automated Follow-Up Inquiries for Attending Doctor
               </h4>
 
@@ -525,13 +525,13 @@ export default function DoctorReviewDashboard({
                 {selectedRecord.missing_info && selectedRecord.missing_info.length > 0 ? (
                   selectedRecord.missing_info.map((info, idx) => (
                     <div key={idx} style={{
-                      background: info.importance === 'HIGH' ? 'rgba(255, 42, 95, 0.12)' : 'rgba(56, 189, 248, 0.1)',
-                      border: info.importance === 'HIGH' ? '1px solid rgba(255, 42, 95, 0.45)' : '1px solid rgba(56, 189, 248, 0.35)',
+                      background: info.importance === 'HIGH' ? 'var(--color-red-bg)' : 'var(--color-blue-bg)',
+                      border: info.importance === 'HIGH' ? '1px solid var(--color-red-border)' : '1px solid var(--color-blue-border)',
                       borderRadius: '10px',
                       padding: '0.75rem 1rem',
-                      boxShadow: info.importance === 'HIGH' ? '0 0 15px rgba(255, 42, 95, 0.15)' : 'none'
+                      boxShadow: info.importance === 'HIGH' ? '0 0 15px var(--color-red-glow)' : 'none'
                     }}>
-                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: info.importance === 'HIGH' ? '#ff6b8b' : '#38bdf8', marginBottom: '0.25rem' }}>
+                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: info.importance === 'HIGH' ? 'var(--color-red)' : 'var(--text-highlight)', marginBottom: '0.25rem' }}>
                         [{info.title}]
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
@@ -540,7 +540,7 @@ export default function DoctorReviewDashboard({
                     </div>
                   ))
                 ) : (
-                  <div style={{ background: 'rgba(16, 185, 129, 0.12)', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.8rem', color: '#6ee7b7', border: '1px solid rgba(16, 185, 129, 0.35)' }}>
+                  <div style={{ background: 'var(--color-green-bg)', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.8rem', color: 'var(--color-green)', border: '1px solid var(--color-green-border)' }}>
                     All standard vitals and baseline clinical parameters recorded. No blind spots flagged.
                   </div>
                 )}
